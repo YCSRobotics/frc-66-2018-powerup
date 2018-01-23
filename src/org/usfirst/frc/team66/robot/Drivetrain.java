@@ -1,4 +1,4 @@
-package org.usfirst.frc.team470.robot;
+package org.usfirst.frc.team66.robot;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
