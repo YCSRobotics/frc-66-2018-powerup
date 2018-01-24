@@ -1,4 +1,4 @@
-package org.usfirst.frc.team66.robot;
+package org.usfirst.frc.team470.robot;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
@@ -13,6 +13,16 @@ public class Constants {
 	public static final TalonSRX RightSlaveMotor  = new TalonSRX(3);
 	
 	public static final boolean EnableDriveBrake = false;
+	public static final double DeadZoneLimit = 0.3;
+	
+	//Gains
+	public static final double SkimGain = 0.15;
+	public static final double TurnGain = 1.0;
+	public static final double FinesseGain = 0.6;
+	
+	//Motor Reverse
+	public static final boolean LeftDriveReversed   = true;
+	public static final boolean RightDriveReversed  = false;
 	
 	//This is the min ramp rate per CTRE documentation
 	public static final double MinTalonRampRate = 1.173; 

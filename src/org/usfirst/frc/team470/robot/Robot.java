@@ -5,7 +5,7 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package org.usfirst.frc.team66.robot;
+package org.usfirst.frc.team470.robot;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -28,6 +28,7 @@ public class Robot extends IterativeRobot {
 
 	/**
 	 * This function is run when the robot is first started up and should be
+	 * 
 	 * used for any initialization code.
 	 */
 	@Override
