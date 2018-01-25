@@ -15,6 +15,8 @@ public class Drivetrain {
 	private static TalonSRX leftSlaveMotor = Constants.LeftSlaveMotor;
 	private static TalonSRX rightMasterMotor = Constants.RightMasterMotor;
 	private static TalonSRX rightSlaveMotor = Constants.RightSlaveMotor;
+	private static TalonSRX omniMasterMotor = Constants.OmniMasterMotor;
+	private static TalonSRX omniSlaveMotor = Constants.OmniSlaveMotor;
 	
 	//Motor Variables
 	private double leftMotorCommand = 0.0;
@@ -36,6 +38,10 @@ public class Drivetrain {
 		rightMasterMotor.configOpenloopRamp(Constants.DriveRampRate, 5);
 		rightSlaveMotor.set(ControlMode.Follower, rightMasterMotor.getDeviceID());
 		
+		//Ramping Omni
+		omniMasterMotor.configOpenloopRamp(Constants.DriveRampRate, 5);
+		omniSlaveMotor.set(ControlMode.Follower, omniMasterMotor.getDeviceID());
+		
 	}
 	
 	public void updateDrivetrain() {
@@ -46,12 +52,15 @@ public class Drivetrain {
 		setTargetSpeeds(targetThrottle, targetTurn);
 		
 		if(!isInverted){
+			
 			leftMasterMotor.set(ControlMode.PercentOutput, (Constants.LeftDriveReversed ? -1:1) * leftMotorCommand * driveGain);
 			rightMasterMotor.set(ControlMode.PercentOutput, (Constants.RightDriveReversed ? -1:1) * rightMotorCommand * driveGain);
-		}
-		else{
+			
+		} else {
+			
 			leftMasterMotor.set(ControlMode.PercentOutput, (Constants.RightDriveReversed ? -1:1) * rightMotorCommand * driveGain);
 			rightMasterMotor.set(ControlMode.PercentOutput, (Constants.LeftDriveReversed ? -1:1) * leftMotorCommand * driveGain);
+			omniMasterMotor.set(ControlMode.PercentOutput, getOmniInput());
 		}
 			
 	}
@@ -105,6 +114,16 @@ public class Drivetrain {
 		
 	}
 
+	private double getOmniInput( ) {
+		
+		double w;
+		w = DriveController.getRawAxis(Constants.LeftJoyX);
+		
+		return (Math.abs(w) > Constants.DeadZoneLimit ? -(w) : 0.0);
+	}
+	
+	
+	
 	private double getTurnInput() {
 		
 		double v;
