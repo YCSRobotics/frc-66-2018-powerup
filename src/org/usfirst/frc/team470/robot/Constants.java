@@ -2,6 +2,8 @@ package org.usfirst.frc.team470.robot;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+
 /* Only variables that have a fixed (never changing) value should be put here */
 
 public class Constants {
@@ -22,6 +24,7 @@ public class Constants {
 	public static final double SkimGain = 0.15;
 	public static final double TurnGain = 1.0;
 	public static final double FinesseGain = 0.6;
+	public static final double GyroGain = 0.08;
 	
 	//Motor Reverse
 	public static final boolean LeftDriveReversed   = false;
@@ -39,6 +42,9 @@ public class Constants {
 	//Controllers
 	public static final int DriveController = 0;
 	public static final int OperatorController = 0;
+	
+	//Sensors
+	public static final ADXRS450_Gyro Gyro = new ADXRS450_Gyro();
 	
 	//Controller Mapping
 	public static final int LeftJoyX = 0;

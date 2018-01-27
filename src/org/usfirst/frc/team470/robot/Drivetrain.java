@@ -2,6 +2,8 @@ package org.usfirst.frc.team470.robot;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.Joystick;
 
 public class Drivetrain {
@@ -21,6 +23,11 @@ public class Drivetrain {
 	//Motor Variables
 	private double leftMotorCommand = 0.0;
 	private double rightMotorCommand = 0.0;
+	
+	//Gyro
+	private static ADXRS450_Gyro gyro = Constants.Gyro;
+	private boolean isDriveStraight = false;
+	private static boolean isGyroZeroed = false;
 	
 	private double driveGain = 1.0;
 	private boolean isInverted = false;
@@ -42,13 +49,37 @@ public class Drivetrain {
 		omniMasterMotor.configOpenloopRamp(Constants.OmniRampRate, 5);
 		omniSlaveMotor.configOpenloopRamp(Constants.OmniRampRate, 5);
 		
+		//Calibrate Gyro
+		gyro.calibrate();
+		
 	}
 	
+	//Main drivetrain movement code
 	public void updateDrivetrain() {
 		
-		targetThrottle = getThrottleInput();
-		targetTurn = getTurnInput();
+		isDriveStraight = isStraightButtonPressed();
 		
+		//zero the gyro if not zeroed
+		if( (isDriveStraight) && (!isGyroZeroed) ) {
+	
+			zeroGyro();
+				
+		//drive straight
+		} else if(isDriveStraight) {
+		
+			goStraight();
+			isDriveStraight = true;
+			
+		//teleop as normal
+		} else {
+			
+			//Do regular teleop control
+			targetThrottle = getThrottleInput();
+			targetTurn = getTurnInput();
+			isGyroZeroed = false;
+			
+		}
+	
 		setTargetSpeeds(targetThrottle, targetTurn);
 		
 		if(!isInverted){
@@ -56,8 +87,17 @@ public class Drivetrain {
 			leftMasterMotor.set(ControlMode.PercentOutput, (Constants.LeftDriveReversed ? -1:1) * leftMotorCommand * driveGain);
 			rightMasterMotor.set(ControlMode.PercentOutput, (Constants.RightDriveReversed ? -1:1) * rightMotorCommand * driveGain);
 			
-			omniMasterMotor.set(ControlMode.PercentOutput, getLeftOmniInput());
-			omniSlaveMotor.set(ControlMode.Follower, -getRightOmniInput());
+			if(isStraightButtonPressed()) {
+				
+				omniMasterMotor.set(ControlMode.PercentOutput, 0);
+				omniSlaveMotor.set(ControlMode.PercentOutput, 0);
+				
+			} else {
+				
+				omniMasterMotor.set(ControlMode.PercentOutput, getLeftOmniInput());
+				omniSlaveMotor.set(ControlMode.PercentOutput, -getRightOmniInput());
+				
+			}
 			
 		} else {
 			
@@ -68,6 +108,7 @@ public class Drivetrain {
 			
 	}
 	
+	//compute turn gain
 	private void setTargetSpeeds(double throttle, double turn){
 			
 			double t_left;
@@ -91,11 +132,12 @@ public class Drivetrain {
 			leftMotorCommand = t_left + skim(t_right);
 			rightMotorCommand = t_right + skim(t_left);
 			
-			leftMotorCommand = Math.max(-1.0, (Math.min(leftMotorCommand, 1.0)));
-			rightMotorCommand = Math.max(-1.0, (Math.min(rightMotorCommand, 1.0)));
+			leftMotorCommand = Math.max(-0.5, (Math.min(leftMotorCommand, 0.5)));
+			rightMotorCommand = Math.max(-0.5, (Math.min(rightMotorCommand, 0.5)));
 
 	}
 	
+	//normalize the acceleration curve
 	private double skim(double v) {
 		
 		if (v > 1.0) {
@@ -114,6 +156,7 @@ public class Drivetrain {
 		
 	}
 	
+	//normal throttle input
 	private double getThrottleInput() {
 		
 		double v;
@@ -122,7 +165,8 @@ public class Drivetrain {
 		return (Math.abs(v) > Constants.DeadZoneLimit ? -(v) : 0.0);
 		
 	}
-
+	
+	//calculate left omni throttle
 	private double getLeftOmniInput( ) {
 		
 		double w;
@@ -132,6 +176,7 @@ public class Drivetrain {
 		
 	}
 	
+	//Calculate right omni throttle
 	private double getRightOmniInput( ) {
 		
 		double z;
@@ -141,8 +186,7 @@ public class Drivetrain {
 		
 	}
 	
-	
-	
+	//Calculate turn input
 	private double getTurnInput() {
 		
 		double v;
@@ -152,5 +196,27 @@ public class Drivetrain {
 
 	}
 	
+	//Math to calculate going straight
+	private void goStraight() {
+		
+		targetThrottle = getThrottleInput();		
+		targetTurn = -1 * (gyro.getAngle() * Constants.GyroGain);
+		
+	}
+	
+	//Is the go straight button pressed?
+	private boolean isStraightButtonPressed() {
+		
+		return(DriveController.getRawButton(Constants.ButtonY));
+		
+	}
+
+	//zero gyro
+	public static void zeroGyro() {
+		
+		gyro.reset();
+		isGyroZeroed = true;
+		
+	}
 	
 }
