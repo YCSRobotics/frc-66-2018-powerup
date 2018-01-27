@@ -35,6 +35,8 @@ public class Drivetrain {
 	private static double targetThrottle = 0.0;
 	private static double targetTurn = 0.0;
 	
+	private static double finesse = 1.0;
+	
 	public Drivetrain() {
 		
 		//Ramping Right
@@ -57,7 +59,13 @@ public class Drivetrain {
 	//Main drivetrain movement code
 	public void updateDrivetrain() {
 		
+<<<<<<< HEAD
 		isDriveStraight = isStraightButtonPressed();
+=======
+		targetThrottle = getThrottleInput();
+		targetTurn = getTurnInput();
+		getFinesseInput();
+>>>>>>> e7f7374ad51315549365c4c5085f20676f1ab0a1
 		
 		//zero the gyro if not zeroed
 		if( (isDriveStraight) && (!isGyroZeroed) ) {
@@ -87,6 +95,7 @@ public class Drivetrain {
 			leftMasterMotor.set(ControlMode.PercentOutput, (Constants.LeftDriveReversed ? -1:1) * leftMotorCommand * driveGain);
 			rightMasterMotor.set(ControlMode.PercentOutput, (Constants.RightDriveReversed ? -1:1) * rightMotorCommand * driveGain);
 			
+<<<<<<< HEAD
 			if(isStraightButtonPressed()) {
 				
 				omniMasterMotor.set(ControlMode.PercentOutput, 0);
@@ -98,6 +107,10 @@ public class Drivetrain {
 				omniSlaveMotor.set(ControlMode.PercentOutput, -getRightOmniInput());
 				
 			}
+=======
+			omniMasterMotor.set(ControlMode.PercentOutput, getLeftOmniInput());
+			omniSlaveMotor.set(ControlMode.PercentOutput, -getRightOmniInput());
+>>>>>>> e7f7374ad51315549365c4c5085f20676f1ab0a1
 			
 		} else {
 			
@@ -132,8 +145,13 @@ public class Drivetrain {
 			leftMotorCommand = t_left + skim(t_right);
 			rightMotorCommand = t_right + skim(t_left);
 			
+<<<<<<< HEAD
 			leftMotorCommand = Math.max(-0.5, (Math.min(leftMotorCommand, 0.5)));
 			rightMotorCommand = Math.max(-0.5, (Math.min(rightMotorCommand, 0.5)));
+=======
+			leftMotorCommand = Math.max(-finesse, (Math.min(leftMotorCommand, finesse)));
+			rightMotorCommand = Math.max(-finesse, (Math.min(rightMotorCommand, finesse)));
+>>>>>>> e7f7374ad51315549365c4c5085f20676f1ab0a1
 
 	}
 	
@@ -219,4 +237,18 @@ public class Drivetrain {
 		
 	}
 	
+	private void getFinesseInput() {
+		
+	if (DriveController.getRawButton(Constants.RightBumper)) {
+			
+		finesse = 0.5;
+			
+	} else {
+		
+		finesse = 1.0;
+		
+	}
+		
+	
+	}
 }

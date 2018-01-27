@@ -57,7 +57,7 @@ public class Constants {
 	public static final int ButtonB = 2;
 	public static final int ButtonX = 3;
 	public static final int ButtonY = 4;
-	public static final int LeftBummper = 5;
-	public static final int RightBummper = 6;
+	public static final int LeftBumper = 5;
+	public static final int RightBumper = 6;
 	
 }
