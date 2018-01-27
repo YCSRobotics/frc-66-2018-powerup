@@ -11,6 +11,8 @@ public class Constants {
 	public static final TalonSRX LeftSlaveMotor   = new TalonSRX(1);
 	public static final TalonSRX RightMasterMotor = new TalonSRX(2);
 	public static final TalonSRX RightSlaveMotor  = new TalonSRX(3);
+	public static final TalonSRX OmniMasterMotor  = new TalonSRX(4);
+	public static final TalonSRX OmniSlaveMotor   = new TalonSRX(5);
 	
 	public static final boolean EnableDriveBrake = false;
 	public static final double DeadZoneLimit = 0.3;
