@@ -74,11 +74,14 @@ public class Drivetrain {
 			double t_right;
 			
 			//Amp up turn only for large amounts of throttle, already dead zoned
-			if(throttle > 0){
+			if(throttle > 0) {
+				
 				turn = turn * (Constants.TurnGain * Math.abs(throttle));
-			}else
-			{
+				
+			} else {
+				
 				turn = turn * Constants.FinesseGain;
+				
 			}
 	
 			
@@ -94,18 +97,21 @@ public class Drivetrain {
 	}
 	
 	private double skim(double v) {
-		if (v > 1.0)
-		{
+		
+		if (v > 1.0) {
+			
 			return -((v-1.0)*Constants.SkimGain);
-		}
-		else if (v < -1.0)
-		{
+			
+		} else if (v < -1.0) {
+			
 			return -((v+1.0)*Constants.SkimGain); 
-		}
-		else
-		{
+			
+		} else {
+			
 			return 0;
+			
 		}
+		
 	}
 	
 	private double getThrottleInput() {
@@ -123,6 +129,7 @@ public class Drivetrain {
 		w = DriveController.getRawAxis(Constants.LeftJoyX);
 		
 		return (Math.abs(w) > Constants.OmniDeadZoneLimit ? -(w) : 0.0);
+		
 	}
 	
 	private double getRightOmniInput( ) {
@@ -131,6 +138,7 @@ public class Drivetrain {
 		z = DriveController.getRawAxis(Constants.LeftJoyX);
 		
 		return (Math.abs(z) > Constants.OmniDeadZoneLimit ? -(z) : 0.0);
+		
 	}
 	
 	
