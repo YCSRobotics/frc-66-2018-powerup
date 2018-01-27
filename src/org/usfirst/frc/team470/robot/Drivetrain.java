@@ -28,6 +28,8 @@ public class Drivetrain {
 	private static double targetThrottle = 0.0;
 	private static double targetTurn = 0.0;
 	
+	private static double finesse = 1.0;
+	
 	public Drivetrain() {
 		
 		//Ramping Right
@@ -48,6 +50,7 @@ public class Drivetrain {
 		
 		targetThrottle = getThrottleInput();
 		targetTurn = getTurnInput();
+		getFinesseInput();
 		
 		setTargetSpeeds(targetThrottle, targetTurn);
 		
@@ -57,7 +60,7 @@ public class Drivetrain {
 			rightMasterMotor.set(ControlMode.PercentOutput, (Constants.RightDriveReversed ? -1:1) * rightMotorCommand * driveGain);
 			
 			omniMasterMotor.set(ControlMode.PercentOutput, getLeftOmniInput());
-			omniSlaveMotor.set(ControlMode.Follower, -getRightOmniInput());
+			omniSlaveMotor.set(ControlMode.PercentOutput, -getRightOmniInput());
 			
 		} else {
 			
@@ -91,8 +94,8 @@ public class Drivetrain {
 			leftMotorCommand = t_left + skim(t_right);
 			rightMotorCommand = t_right + skim(t_left);
 			
-			leftMotorCommand = Math.max(-1.0, (Math.min(leftMotorCommand, 1.0)));
-			rightMotorCommand = Math.max(-1.0, (Math.min(rightMotorCommand, 1.0)));
+			leftMotorCommand = Math.max(-finesse, (Math.min(leftMotorCommand, finesse)));
+			rightMotorCommand = Math.max(-finesse, (Math.min(rightMotorCommand, finesse)));
 
 	}
 	
@@ -153,4 +156,18 @@ public class Drivetrain {
 	}
 	
 	
+	private void getFinesseInput() {
+		
+	if (DriveController.getRawButton(Constants.RightBumper)) {
+			
+		finesse = 0.5;
+			
+	} else {
+		
+		finesse = 1.0;
+		
+	}
+		
+	
+	}
 }
