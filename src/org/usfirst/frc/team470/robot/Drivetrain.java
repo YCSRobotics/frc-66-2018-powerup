@@ -39,8 +39,8 @@ public class Drivetrain {
 		rightSlaveMotor.set(ControlMode.Follower, rightMasterMotor.getDeviceID());
 		
 		//Ramping Omni
-		omniMasterMotor.configOpenloopRamp(Constants.DriveRampRate, 5);
-		omniSlaveMotor.set(ControlMode.Follower, omniMasterMotor.getDeviceID());
+		omniMasterMotor.configOpenloopRamp(Constants.OmniRampRate, 5);
+		omniSlaveMotor.configOpenloopRamp(Constants.OmniRampRate, 5);
 		
 	}
 	
@@ -56,11 +56,14 @@ public class Drivetrain {
 			leftMasterMotor.set(ControlMode.PercentOutput, (Constants.LeftDriveReversed ? -1:1) * leftMotorCommand * driveGain);
 			rightMasterMotor.set(ControlMode.PercentOutput, (Constants.RightDriveReversed ? -1:1) * rightMotorCommand * driveGain);
 			
+			omniMasterMotor.set(ControlMode.PercentOutput, getLeftOmniInput());
+			omniSlaveMotor.set(ControlMode.Follower, -getRightOmniInput());
+			
 		} else {
 			
 			leftMasterMotor.set(ControlMode.PercentOutput, (Constants.RightDriveReversed ? -1:1) * rightMotorCommand * driveGain);
 			rightMasterMotor.set(ControlMode.PercentOutput, (Constants.LeftDriveReversed ? -1:1) * leftMotorCommand * driveGain);
-			omniMasterMotor.set(ControlMode.PercentOutput, getOmniInput());
+		
 		}
 			
 	}
@@ -114,12 +117,20 @@ public class Drivetrain {
 		
 	}
 
-	private double getOmniInput( ) {
+	private double getLeftOmniInput( ) {
 		
 		double w;
 		w = DriveController.getRawAxis(Constants.LeftJoyX);
 		
-		return (Math.abs(w) > Constants.DeadZoneLimit ? -(w) : 0.0);
+		return (Math.abs(w) > Constants.OmniDeadZoneLimit ? -(w) : 0.0);
+	}
+	
+	private double getRightOmniInput( ) {
+		
+		double z;
+		z = DriveController.getRawAxis(Constants.LeftJoyX);
+		
+		return (Math.abs(z) > Constants.OmniDeadZoneLimit ? -(z) : 0.0);
 	}
 	
 	

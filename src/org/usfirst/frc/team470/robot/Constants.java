@@ -11,9 +11,12 @@ public class Constants {
 	public static final TalonSRX LeftSlaveMotor   = new TalonSRX(1);
 	public static final TalonSRX RightMasterMotor = new TalonSRX(2);
 	public static final TalonSRX RightSlaveMotor  = new TalonSRX(3);
+	public static final TalonSRX OmniMasterMotor  = new TalonSRX(4);
+	public static final TalonSRX OmniSlaveMotor   = new TalonSRX(5);
 	
 	public static final boolean EnableDriveBrake = false;
 	public static final double DeadZoneLimit = 0.3;
+	public static final double OmniDeadZoneLimit = 0.35;
 	
 	//Gains
 	public static final double SkimGain = 0.15;
@@ -21,8 +24,8 @@ public class Constants {
 	public static final double FinesseGain = 0.6;
 	
 	//Motor Reverse
-	public static final boolean LeftDriveReversed   = true;
-	public static final boolean RightDriveReversed  = false;
+	public static final boolean LeftDriveReversed   = false;
+	public static final boolean RightDriveReversed  = true;
 	
 	//This is the min ramp rate per CTRE documentation
 	public static final double MinTalonRampRate = 1.173; 
@@ -30,7 +33,8 @@ public class Constants {
 	
 	//This is the time to ramp from 0V to +/-12V in sec
 	public static final double DriveRampTime = 0.25; 
-	public static final double DriveRampRate = (0.5);
+	public static final double DriveRampRate = 0.5;
+	public static final double OmniRampRate = 0.5;
 	
 	//Controllers
 	public static final int DriveController = 0;
