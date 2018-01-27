@@ -55,12 +55,13 @@ public class Drivetrain {
 			
 			leftMasterMotor.set(ControlMode.PercentOutput, (Constants.LeftDriveReversed ? -1:1) * leftMotorCommand * driveGain);
 			rightMasterMotor.set(ControlMode.PercentOutput, (Constants.RightDriveReversed ? -1:1) * rightMotorCommand * driveGain);
+			omniMasterMotor.set(ControlMode.PercentOutput, getOmniInput());
 			
 		} else {
 			
 			leftMasterMotor.set(ControlMode.PercentOutput, (Constants.RightDriveReversed ? -1:1) * rightMotorCommand * driveGain);
 			rightMasterMotor.set(ControlMode.PercentOutput, (Constants.LeftDriveReversed ? -1:1) * leftMotorCommand * driveGain);
-			omniMasterMotor.set(ControlMode.PercentOutput, getOmniInput());
+			
 		}
 			
 	}
