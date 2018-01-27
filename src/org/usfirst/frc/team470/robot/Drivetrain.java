@@ -15,8 +15,6 @@ public class Drivetrain {
 	private static TalonSRX leftSlaveMotor = Constants.LeftSlaveMotor;
 	private static TalonSRX rightMasterMotor = Constants.RightMasterMotor;
 	private static TalonSRX rightSlaveMotor = Constants.RightSlaveMotor;
-	private static TalonSRX omniMasterMotor = Constants.OmniMasterMotor;
-	private static TalonSRX omniSlaveMotor = Constants.OmniSlaveMotor;
 	
 	//Motor Variables
 	private double leftMotorCommand = 0.0;
@@ -38,10 +36,13 @@ public class Drivetrain {
 		rightMasterMotor.configOpenloopRamp(Constants.DriveRampRate, 5);
 		rightSlaveMotor.set(ControlMode.Follower, rightMasterMotor.getDeviceID());
 		
+<<<<<<< HEAD
 		//Ramping Omni
 		omniMasterMotor.configOpenloopRamp(Constants.OmniRampRate, 5);
 		omniSlaveMotor.configOpenloopRamp(Constants.OmniRampRate, 5);
 		
+=======
+>>>>>>> parent of cc00fdf... Added Omni Motor
 	}
 	
 	public void updateDrivetrain() {
@@ -52,9 +53,9 @@ public class Drivetrain {
 		setTargetSpeeds(targetThrottle, targetTurn);
 		
 		if(!isInverted){
-			
 			leftMasterMotor.set(ControlMode.PercentOutput, (Constants.LeftDriveReversed ? -1:1) * leftMotorCommand * driveGain);
 			rightMasterMotor.set(ControlMode.PercentOutput, (Constants.RightDriveReversed ? -1:1) * rightMotorCommand * driveGain);
+<<<<<<< HEAD
 			
 			omniMasterMotor.set(ControlMode.PercentOutput, getLeftOmniInput());
 			omniSlaveMotor.set(ControlMode.Follower, -getRightOmniInput());
@@ -64,6 +65,12 @@ public class Drivetrain {
 			leftMasterMotor.set(ControlMode.PercentOutput, (Constants.RightDriveReversed ? -1:1) * rightMotorCommand * driveGain);
 			rightMasterMotor.set(ControlMode.PercentOutput, (Constants.LeftDriveReversed ? -1:1) * leftMotorCommand * driveGain);
 		
+=======
+		}
+		else{
+			leftMasterMotor.set(ControlMode.PercentOutput, (Constants.RightDriveReversed ? -1:1) * rightMotorCommand * driveGain);
+			rightMasterMotor.set(ControlMode.PercentOutput, (Constants.LeftDriveReversed ? -1:1) * leftMotorCommand * driveGain);
+>>>>>>> parent of cc00fdf... Added Omni Motor
 		}
 			
 	}
@@ -117,6 +124,7 @@ public class Drivetrain {
 		
 	}
 
+<<<<<<< HEAD
 	private double getLeftOmniInput( ) {
 		
 		double w;
@@ -135,6 +143,8 @@ public class Drivetrain {
 	
 	
 	
+=======
+>>>>>>> parent of cc00fdf... Added Omni Motor
 	private double getTurnInput() {
 		
 		double v;
