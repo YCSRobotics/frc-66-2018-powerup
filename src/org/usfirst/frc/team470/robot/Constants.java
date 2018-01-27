@@ -24,11 +24,12 @@ public class Constants {
 	public static final double SkimGain = 0.15;
 	public static final double TurnGain = 1.0;
 	public static final double FinesseGain = 0.6;
-	public static final double GyroGain = 0.08;
+	public static final double GyroGain = 0.05;
 	
 	//Motor Reverse
 	public static final boolean LeftDriveReversed   = false;
 	public static final boolean RightDriveReversed  = true;
+	public static final double Finesse = 0.42;
 	
 	//This is the min ramp rate per CTRE documentation
 	public static final double MinTalonRampRate = 1.173; 

@@ -23,6 +23,8 @@ public class Drivetrain {
 	//Motor Variables
 	private double leftMotorCommand = 0.0;
 	private double rightMotorCommand = 0.0;
+	private double leftOmniMotorCommand = 0.0;
+	private double rightOmniMotorCommand = 0.0;
 	
 	//Gyro
 	private static ADXRS450_Gyro gyro = Constants.Gyro;
@@ -59,13 +61,13 @@ public class Drivetrain {
 	//Main drivetrain movement code
 	public void updateDrivetrain() {
 		
-<<<<<<< HEAD
+
 		isDriveStraight = isStraightButtonPressed();
-=======
+
 		targetThrottle = getThrottleInput();
 		targetTurn = getTurnInput();
 		getFinesseInput();
->>>>>>> e7f7374ad51315549365c4c5085f20676f1ab0a1
+
 		
 		//zero the gyro if not zeroed
 		if( (isDriveStraight) && (!isGyroZeroed) ) {
@@ -95,22 +97,9 @@ public class Drivetrain {
 			leftMasterMotor.set(ControlMode.PercentOutput, (Constants.LeftDriveReversed ? -1:1) * leftMotorCommand * driveGain);
 			rightMasterMotor.set(ControlMode.PercentOutput, (Constants.RightDriveReversed ? -1:1) * rightMotorCommand * driveGain);
 			
-<<<<<<< HEAD
-			if(isStraightButtonPressed()) {
-				
-				omniMasterMotor.set(ControlMode.PercentOutput, 0);
-				omniSlaveMotor.set(ControlMode.PercentOutput, 0);
-				
-			} else {
-				
-				omniMasterMotor.set(ControlMode.PercentOutput, getLeftOmniInput());
-				omniSlaveMotor.set(ControlMode.PercentOutput, -getRightOmniInput());
-				
-			}
-=======
-			omniMasterMotor.set(ControlMode.PercentOutput, getLeftOmniInput());
-			omniSlaveMotor.set(ControlMode.PercentOutput, -getRightOmniInput());
->>>>>>> e7f7374ad51315549365c4c5085f20676f1ab0a1
+			omniMasterMotor.set(ControlMode.PercentOutput, leftOmniMotorCommand);
+			omniSlaveMotor.set(ControlMode.PercentOutput, -rightOmniMotorCommand);
+
 			
 		} else {
 			
@@ -144,14 +133,12 @@ public class Drivetrain {
 			
 			leftMotorCommand = t_left + skim(t_right);
 			rightMotorCommand = t_right + skim(t_left);
-			
-<<<<<<< HEAD
-			leftMotorCommand = Math.max(-0.5, (Math.min(leftMotorCommand, 0.5)));
-			rightMotorCommand = Math.max(-0.5, (Math.min(rightMotorCommand, 0.5)));
-=======
+
 			leftMotorCommand = Math.max(-finesse, (Math.min(leftMotorCommand, finesse)));
 			rightMotorCommand = Math.max(-finesse, (Math.min(rightMotorCommand, finesse)));
->>>>>>> e7f7374ad51315549365c4c5085f20676f1ab0a1
+			
+			leftOmniMotorCommand = Math.max(-finesse, (Math.min(getLeftOmniInput(), finesse)));
+			rightOmniMotorCommand = Math.max(-finesse, (Math.min(getRightOmniInput(), finesse)));
 
 	}
 	
@@ -239,16 +226,16 @@ public class Drivetrain {
 	
 	private void getFinesseInput() {
 		
-	if (DriveController.getRawButton(Constants.RightBumper)) {
+		if (DriveController.getRawButton(Constants.RightBumper)) {
+				
+			finesse = Constants.Finesse;
+				
+		} else {
 			
-		finesse = 0.5;
+			finesse = 1.0;
 			
-	} else {
-		
-		finesse = 1.0;
+		}
 		
 	}
-		
 	
-	}
 }
