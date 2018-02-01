@@ -39,6 +39,9 @@ public class Drivetrain {
 	
 	private static double finesse = 1.0;
 	
+	//Sensors
+	SensorData sensors = new SensorData();
+	
 	public Drivetrain() {
 		
 		//Ramping Right
@@ -60,7 +63,6 @@ public class Drivetrain {
 	
 	//Main drivetrain movement code
 	public void updateDrivetrain() {
-		
 
 		isDriveStraight = isStraightButtonPressed();
 
@@ -68,7 +70,6 @@ public class Drivetrain {
 		targetTurn = getTurnInput();
 		getFinesseInput();
 
-		
 		//zero the gyro if not zeroed
 		if( (isDriveStraight) && (!isGyroZeroed) ) {
 	
