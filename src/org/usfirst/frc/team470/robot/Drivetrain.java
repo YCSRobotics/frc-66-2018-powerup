@@ -17,8 +17,8 @@ public class Drivetrain {
 	private static TalonSRX leftSlaveMotor = Constants.LeftSlaveMotor;
 	private static TalonSRX rightMasterMotor = Constants.RightMasterMotor;
 	private static TalonSRX rightSlaveMotor = Constants.RightSlaveMotor;
-	private static TalonSRX omniMasterMotor = Constants.OmniMasterMotor;
-	private static TalonSRX omniSlaveMotor = Constants.OmniSlaveMotor;
+	private static TalonSRX rightOmniMotor = Constants.OmniMasterMotor;
+	private static TalonSRX leftOmniMotor = Constants.OmniSlaveMotor;
 	
 	//Motor Variables
 	private double leftMotorCommand = 0.0;
@@ -44,7 +44,7 @@ public class Drivetrain {
 	
 	public Drivetrain() {
 		
-		//Ramping Right
+		//Ramping Left
 		leftMasterMotor.configOpenloopRamp(Constants.DriveRampRate, 5);
 		leftSlaveMotor.set(ControlMode.Follower, leftMasterMotor.getDeviceID());
 		
@@ -53,8 +53,8 @@ public class Drivetrain {
 		rightSlaveMotor.set(ControlMode.Follower, rightMasterMotor.getDeviceID());
 		
 		//Ramping Omni
-		omniMasterMotor.configOpenloopRamp(Constants.OmniRampRate, 5);
-		omniSlaveMotor.configOpenloopRamp(Constants.OmniRampRate, 5);
+		leftOmniMotor.configOpenloopRamp(Constants.OmniRampRate, 5);
+		rightOmniMotor.configOpenloopRamp(Constants.OmniRampRate, 5);
 		
 		//Calibrate Gyro
 		gyro.calibrate();
@@ -77,18 +77,15 @@ public class Drivetrain {
 				
 		//drive straight
 		} else if(isDriveStraight) {
-		
 			goStraight();
 			isDriveStraight = true;
 			
 		//teleop as normal
 		} else {
-			
 			//Do regular teleop control
 			targetThrottle = getThrottleInput();
 			targetTurn = getTurnInput();
-			isGyroZeroed = false;
-			
+			isGyroZeroed = false;			
 		}
 	
 		setTargetSpeeds(targetThrottle, targetTurn);
@@ -98,8 +95,8 @@ public class Drivetrain {
 			leftMasterMotor.set(ControlMode.PercentOutput, (Constants.LeftDriveReversed ? -1:1) * leftMotorCommand * driveGain);
 			rightMasterMotor.set(ControlMode.PercentOutput, (Constants.RightDriveReversed ? -1:1) * rightMotorCommand * driveGain);
 			
-			omniMasterMotor.set(ControlMode.PercentOutput, leftOmniMotorCommand);
-			omniSlaveMotor.set(ControlMode.PercentOutput, -rightOmniMotorCommand);
+			leftOmniMotor.set(ControlMode.PercentOutput, leftOmniMotorCommand);
+			rightOmniMotor.set(ControlMode.PercentOutput, -rightOmniMotorCommand);
 
 			
 		} else {

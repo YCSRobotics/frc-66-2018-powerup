@@ -51,6 +51,9 @@ public class Constants {
 	
 	//Sensors
 	public static final ADXRS450_Gyro Gyro = new ADXRS450_Gyro();
+	public static final int LeftUltrasonic = 1;
+	public static final double SuppliedVoltage = 5.0;
+	public static final double VoltsPerFiveMM = SuppliedVoltage/1024;
 	public static final int LeftEncoderA = 0;
 	public static final int LeftEncoderB = 1;
 	public static final int RightEncoderA = 2;

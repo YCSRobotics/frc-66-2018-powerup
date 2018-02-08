@@ -14,11 +14,30 @@ public class SensorData {
 		
 		}
 		
+		public double getLeftWheelDistance() {
+			
+			return leftEncoder.getDistance();
+			
+		}
+		
+		public double getRightWheelDistance() {
+			
+			return rightEncoder.getDistance();
+			
+		}
+		
 		public double getAvgDistance() {
 			
 			double ave;		
 			ave = (leftEncoder.getDistance() + rightEncoder.getDistance())/2;
 			return ave;
+			
+		}
+		
+		public void resetEncoder() {
+			
+			leftEncoder.reset();
+			rightEncoder.reset();
 			
 		}
 		

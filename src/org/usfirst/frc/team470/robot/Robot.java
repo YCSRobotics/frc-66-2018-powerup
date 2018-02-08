@@ -25,7 +25,8 @@ public class Robot extends IterativeRobot {
 	private SendableChooser<String> m_chooser = new SendableChooser<>();
 	
 	Drivetrain drivetrain = new Drivetrain();
-
+	DashboardState smartdash = new DashboardState();
+	AutoRoutine auto = new AutoRoutine();
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * 
@@ -68,7 +69,7 @@ public class Robot extends IterativeRobot {
 				break;
 			case kDefaultAuto:
 			default:
-				// Put default auto code here
+				// Put default auto  here
 				break;
 		}
 	}
@@ -80,6 +81,7 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {
 		
 		drivetrain.updateDrivetrain();
+		smartdash.updateSmartDashboard();
 		
 	}
 
