@@ -7,7 +7,8 @@ import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 
 public class AutoRoutine {
 
-	//put the state machine for autonomous program here
+	//put the modules for autonomous programs here. 
+	//the goal is to keep things portable
 	
 	//Motors
 	private static TalonSRX leftMasterMotor = Constants.LeftMasterMotor;
@@ -17,7 +18,7 @@ public class AutoRoutine {
 	private static TalonSRX rightOmniMotor = Constants.OmniMasterMotor;
 	private static TalonSRX leftOmniMotor  = Constants.OmniSlaveMotor;
 	
-	//Gyro
+	//Sensor Information
 	private static ADXRS450_Gyro gyro = Constants.Gyro;
 	private static boolean isGyroZero = false;
 	
@@ -32,7 +33,7 @@ public class AutoRoutine {
 	
 	public AutoRoutine() {
 		
-		//Ramping Left
+				//Ramping Left
 				leftMasterMotor.configOpenloopRamp(Constants.DriveRampRate, 5);
 				leftSlaveMotor.set(ControlMode.Follower, leftMasterMotor.getDeviceID());
 				
@@ -51,10 +52,14 @@ public class AutoRoutine {
 	
 	public void goStraight(double distance, double throttle) {
 		
-		if(isGyroZero) {
-			
-			if (stopRobot == false) {
-				
+		stopRobot = false;
+		
+		System.out.println("Go Straight Stop Robot =" + stopRobot);
+		
+		while (stopRobot == false) {
+			//if the gyro is zeroed, and stop robot has not been triggered 
+			if(isGyroZero) {
+					
 				targetTurn = -1 * (gyro.getAngle() * Constants.GyroGain);
 				
 				turn =  targetTurn;
@@ -72,14 +77,60 @@ public class AutoRoutine {
 				} else {
 				
 					stopRobot = true;
+					leftMasterMotor.set(ControlMode.PercentOutput, 0);
+					rightMasterMotor.set(ControlMode.PercentOutput, 0);
+					return;
+					
+				}
+						
+			} else {
+				
+				gyro.reset();
+				isGyroZero = true;
+				
+			}
+			
+		}
+		
+		sensor.resetEncoder();
+		isGyroZero = false;
+		
+	}
+	
+	public void turnAngle(double targetAngle, double throttle) {
+		
+		stopRobot = false;
+		
+		System.out.println("Not enterin loop 1");
+		
+		if (isGyroZero) {
+			
+			System.out.println("It not entering loop");
+			System.out.println(stopRobot);
+			
+			while (stopRobot == false) {
+				
+				System.out.println("Moving Robot");
+				if (targetAngle > 0) {
+					
+					while (gyro.getAngle() < targetAngle + 3) {
+						
+						leftMasterMotor.set(ControlMode.PercentOutput, throttle);
+						
+					}
+					
+					
+				} else {
+					
+					while (gyro.getAngle() > targetAngle - 3) {
+						
+						rightMasterMotor.set(ControlMode.PercentOutput, -throttle);
+						
+					}
 					
 				}
 				
-			} else {
-				
-				sensor.resetEncoder();
-				leftMasterMotor.set(ControlMode.PercentOutput, 0);
-				rightMasterMotor.set(ControlMode.PercentOutput, 0);
+				stopRobot = true;
 				
 			}
 			
@@ -89,7 +140,31 @@ public class AutoRoutine {
 			isGyroZero = true;
 			
 		}
+		
+		sensor.resetEncoder();
+		isGyroZero = false;
+		
+	}
 	
+	public void stopRobot() {
+		
+		while (true) {
+			
+			//intentional infinite loop
+			
+		}
+		
+	}
+	
+	public void test() {
+		
+		System.out.println("Going Straight");
+		goStraight(50, 0.25);
+		System.out.println("Turning");
+		turnAngle(45, 0.3);
+		goStraight(-50, 0.25);
+		stopRobot();
+		
 	}
 	
 }

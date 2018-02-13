@@ -7,7 +7,7 @@
 
 package org.usfirst.frc.team470.robot;
 
-import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -18,18 +18,17 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * creating this project, you must also update the build.properties file in the
  * project.
  */
-public class Robot extends IterativeRobot {
+public class Robot extends TimedRobot {
 	private static final String kDefaultAuto = "Default";
 	private static final String kCustomAuto = "My Auto";
 	private String m_autoSelected;
 	private SendableChooser<String> m_chooser = new SendableChooser<>();
 	
 	Drivetrain drivetrain = new Drivetrain();
-	DashboardState smartdash = new DashboardState();
-	AutoRoutine auto = new AutoRoutine();
+	DashboardState dashboard = new DashboardState();
+
 	/**
 	 * This function is run when the robot is first started up and should be
-	 * 
 	 * used for any initialization code.
 	 */
 	@Override
@@ -53,8 +52,8 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousInit() {
 		m_autoSelected = m_chooser.getSelected();
-		// autoSelected = SmartDashboard.getString("Auto Selector",
-		// defaultAuto);
+		// m_autoSelected = SmartDashboard.getString("Auto Selector",
+		// 		kDefaultAuto);
 		System.out.println("Auto selected: " + m_autoSelected);
 	}
 
@@ -69,7 +68,7 @@ public class Robot extends IterativeRobot {
 				break;
 			case kDefaultAuto:
 			default:
-				// Put default auto  here
+				// Put default auto code here
 				break;
 		}
 	}
@@ -80,8 +79,8 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopPeriodic() {
 		
+		dashboard.updateSmartDashboard();
 		drivetrain.updateDrivetrain();
-		smartdash.updateSmartDashboard();
 		
 	}
 
