@@ -31,7 +31,8 @@ public class Constants {
 	public static final double TurnGain = 1.0;
 	public static final double FinesseGain = 0.6;
 	public static final double GyroGain = 0.05;
-	public static final double LiftMaxSpeed = 0.2;
+	public static final double LiftMaxSpeed = 1.0;
+	public static final double LiftGain = 0.2;
 	
 	//Motor Reverse
 	public static final boolean LeftDriveReversed   = false;

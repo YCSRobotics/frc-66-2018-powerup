@@ -59,7 +59,7 @@ public class Drivetrain {
 		liftMotor.configOpenloopRamp(Constants.DriveRampRate, 5);
 		
 		//Ramping Omni
-		bottomOmniMotor.configOpenloopRamp(Constants.OmniRampRate, 5);
+		//bottomOmniMotor.configOpenloopRamp(Constants.OmniRampRate, 5);
 		topOmniMotor.configOpenloopRamp(Constants.OmniRampRate, 5);
 		
 		//Calibrate Gyro
@@ -97,7 +97,7 @@ public class Drivetrain {
 	
 		setTargetSpeeds(targetThrottle, targetTurn);
 		
-		liftMotor.set(ControlMode.PercentOutput, liftMotorCommand * Constants.LiftMaxSpeed);
+		liftMotor.set(ControlMode.PercentOutput, getLiftInput());
 		
 		if(!isInverted){
 			
