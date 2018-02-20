@@ -7,6 +7,7 @@ public class SensorData {
 		private static Encoder leftEncoder = Constants.LeftWheelEncoder;
 		private static Encoder rightEncoder = Constants.RightWheelEncoder;
 		
+		//set the how much distance is travelled per pulse
 		public SensorData() {
 			
 			leftEncoder.setDistancePerPulse(Constants.EncoderDistancePerPulse);
@@ -26,7 +27,7 @@ public class SensorData {
 			
 		}
 		
-		public double getAvgDistance() {
+		public double getMainAvgDistance() {
 			
 			double ave;		
 			ave = (leftEncoder.getDistance() + rightEncoder.getDistance())/2;

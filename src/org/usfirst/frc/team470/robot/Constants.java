@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.CounterBase;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.Solenoid;
 
 /* Only variables that have a fixed (never changing) value should be put here */
 
@@ -15,8 +16,11 @@ public class Constants {
 	public static final TalonSRX LeftSlaveMotor = new TalonSRX(1);
 	public static final TalonSRX RightMasterMotor = new TalonSRX(2);
 	public static final TalonSRX RightSlaveMotor = new TalonSRX(3);
-	public static final TalonSRX OmniMasterMotor = new TalonSRX(4);
-	public static final TalonSRX OmniSlaveMotor = new TalonSRX(5);
+	public static final TalonSRX OmniBottomMotor = new TalonSRX(4);
+	public static final TalonSRX OmniTopMotor = new TalonSRX(5);
+	public static final TalonSRX LiftMotor = new TalonSRX(6);
+
+	public static final Solenoid Intake = new Solenoid(0);
 	
 	public static final boolean EnableDriveBrake = false;
 	public static final double DeadZoneLimit = 0.3;
@@ -27,11 +31,12 @@ public class Constants {
 	public static final double TurnGain = 1.0;
 	public static final double FinesseGain = 0.6;
 	public static final double GyroGain = 0.05;
+	public static final double LiftMaxSpeed = 0.2;
 	
 	//Motor Reverse
 	public static final boolean LeftDriveReversed   = false;
 	public static final boolean RightDriveReversed  = true;
-	public static final double Finesse = 0.42;
+	public static final double Finesse = 0.3;
 	
 	//This is the min ramp rate per CTRE documentation
 	public static final double MinTalonRampRate = 1.173; 
@@ -44,10 +49,10 @@ public class Constants {
 	
 	//Controllers
 	public static final int DriveController = 0;
-	public static final int OperatorController = 0;
+	public static final int OperatorController = 1;
 	
 	//Math
-	public static final double PI = Math.PI;
+	public static final double PI = 3.1415962;
 	
 	//Sensors
 	public static final ADXRS450_Gyro Gyro = new ADXRS450_Gyro();
@@ -77,6 +82,9 @@ public class Constants {
             RightEncoderReversed,
             CounterBase.EncodingType.k4X);
 	
+	public static final int CountsPerRevolution = 4096;
+	public static final double OmniEncoderInchPerRotation = 1/(CountsPerRevolution/(WheelDiameter*PI));
+	
 	//Controller Mapping
 	public static final int LeftJoyX = 0;
 	public static final int LeftJoyY = 1;
@@ -90,5 +98,7 @@ public class Constants {
 	public static final int ButtonY = 4;
 	public static final int LeftBumper = 5;
 	public static final int RightBumper = 6;
+	public static final int SelectButton = 7;
+	public static final int Startbutton = 8;
 	
 }

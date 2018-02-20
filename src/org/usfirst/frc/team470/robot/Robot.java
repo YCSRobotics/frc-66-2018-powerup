@@ -26,6 +26,7 @@ public class Robot extends TimedRobot {
 	
 	Drivetrain drivetrain = new Drivetrain();
 	DashboardState dashboard = new DashboardState();
+	Intake intake = new Intake();
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -79,6 +80,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopPeriodic() {
 		
+		intake.updateIntake();
 		dashboard.updateSmartDashboard();
 		drivetrain.updateDrivetrain();
 		

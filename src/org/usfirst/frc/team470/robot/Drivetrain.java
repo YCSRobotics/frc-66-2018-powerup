@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.Joystick;
 
 public class Drivetrain {
 	
+	private static boolean isInvertPressed = false;
 	//Initialize Controllers
 	Joystick DriveController = new Joystick(Constants.DriveController);
 	Joystick OperatorController = new Joystick(Constants.OperatorController);
@@ -17,14 +18,16 @@ public class Drivetrain {
 	private static TalonSRX leftSlaveMotor = Constants.LeftSlaveMotor;
 	private static TalonSRX rightMasterMotor = Constants.RightMasterMotor;
 	private static TalonSRX rightSlaveMotor = Constants.RightSlaveMotor;
-	private static TalonSRX rightOmniMotor = Constants.OmniMasterMotor;
-	private static TalonSRX leftOmniMotor = Constants.OmniSlaveMotor;
+	private static TalonSRX topOmniMotor = Constants.OmniTopMotor;
+	private static TalonSRX bottomOmniMotor = Constants.OmniBottomMotor;
+	private static TalonSRX liftMotor = Constants.LiftMotor;
 	
 	//Motor Variables
 	private double leftMotorCommand = 0.0;
 	private double rightMotorCommand = 0.0;
-	private double leftOmniMotorCommand = 0.0;
-	private double rightOmniMotorCommand = 0.0;
+	private double bottomOmniMotorCommand = 0.0;
+	private double topOmniMotorCommand = 0.0;
+	private double liftMotorCommand = 0.0;
 	
 	//Gyro
 	private static ADXRS450_Gyro gyro = Constants.Gyro;
@@ -52,9 +55,12 @@ public class Drivetrain {
 		rightMasterMotor.configOpenloopRamp(Constants.DriveRampRate, 5);
 		rightSlaveMotor.set(ControlMode.Follower, rightMasterMotor.getDeviceID());
 		
+		//Ramping Lift
+		liftMotor.configOpenloopRamp(Constants.DriveRampRate, 5);
+		
 		//Ramping Omni
-		leftOmniMotor.configOpenloopRamp(Constants.OmniRampRate, 5);
-		rightOmniMotor.configOpenloopRamp(Constants.OmniRampRate, 5);
+		bottomOmniMotor.configOpenloopRamp(Constants.OmniRampRate, 5);
+		topOmniMotor.configOpenloopRamp(Constants.OmniRampRate, 5);
 		
 		//Calibrate Gyro
 		gyro.calibrate();
@@ -69,6 +75,7 @@ public class Drivetrain {
 		targetThrottle = getThrottleInput();
 		targetTurn = getTurnInput();
 		getFinesseInput();
+		setInvert();
 
 		//zero the gyro if not zeroed
 		if( (isDriveStraight) && (!isGyroZeroed) ) {
@@ -90,13 +97,16 @@ public class Drivetrain {
 	
 		setTargetSpeeds(targetThrottle, targetTurn);
 		
+		liftMotor.set(ControlMode.PercentOutput, liftMotorCommand * Constants.LiftMaxSpeed);
+		
 		if(!isInverted){
 			
 			leftMasterMotor.set(ControlMode.PercentOutput, (Constants.LeftDriveReversed ? -1:1) * leftMotorCommand * driveGain);
 			rightMasterMotor.set(ControlMode.PercentOutput, (Constants.RightDriveReversed ? -1:1) * rightMotorCommand * driveGain);
 			
-			leftOmniMotor.set(ControlMode.PercentOutput, -leftOmniMotorCommand);
-			rightOmniMotor.set(ControlMode.PercentOutput, rightOmniMotorCommand);
+			//update omnis
+			bottomOmniMotor.set(ControlMode.PercentOutput, bottomOmniMotorCommand);
+			topOmniMotor.set(ControlMode.PercentOutput, -topOmniMotorCommand);
 
 			
 		} else {
@@ -129,14 +139,16 @@ public class Drivetrain {
 			t_left = throttle + turn;
 			t_right = throttle - turn;
 			
+			//apply the turn to throttle
 			leftMotorCommand = t_left + skim(t_right);
 			rightMotorCommand = t_right + skim(t_left);
 
 			leftMotorCommand = Math.max(-finesse, (Math.min(leftMotorCommand, finesse)));
 			rightMotorCommand = Math.max(-finesse, (Math.min(rightMotorCommand, finesse)));
 			
-			leftOmniMotorCommand = Math.max(-finesse, (Math.min(getLeftOmniInput(), finesse)));
-			rightOmniMotorCommand = Math.max(-finesse, (Math.min(getRightOmniInput(), finesse)));
+			bottomOmniMotorCommand = Math.max(-finesse, (Math.min(getLeftOmniInput(), finesse)));
+			topOmniMotorCommand = Math.max(-finesse, (Math.min(getRightOmniInput(), finesse)));
+			liftMotorCommand = Math.max(-finesse, (Math.min(getLiftInput(), finesse)));
 
 	}
 	
@@ -170,7 +182,7 @@ public class Drivetrain {
 	}
 	
 	//calculate left omni throttle
-	private double getLeftOmniInput( ) {
+	private double getLeftOmniInput() {
 		
 		double w;
 		w = DriveController.getRawAxis(Constants.LeftJoyX);
@@ -180,7 +192,7 @@ public class Drivetrain {
 	}
 	
 	//Calculate right omni throttle
-	private double getRightOmniInput( ) {
+	private double getRightOmniInput() {
 		
 		double z;
 		z = DriveController.getRawAxis(Constants.LeftJoyX);
@@ -188,6 +200,16 @@ public class Drivetrain {
 		return (Math.abs(z) > Constants.OmniDeadZoneLimit ? -(z) : 0.0);
 		
 	}
+	
+	//Calculate right omni throttle
+	private double getLiftInput() {
+		
+		double z;
+		z = OperatorController.getRawAxis(Constants.LeftJoyY);
+		
+		return (Math.abs(z) > Constants.OmniDeadZoneLimit ? -(z) : 0.0);
+		
+	}	
 	
 	//Calculate turn input
 	private double getTurnInput() {
@@ -198,6 +220,32 @@ public class Drivetrain {
 		return(v >= 0 ? (v*v):-(v*v));
 
 	}
+	
+	private void setInvert(){
+			
+			if((DriveController.getRawButton(Constants.SelectButton)) && (!isInvertPressed)) {
+						
+				isInvertPressed = true;
+						
+			    if(isInverted) {
+			    	
+			    	isInverted = false;
+			    	
+				} else {
+					
+					isInverted = true;
+					
+				}
+			    
+			} else if (!DriveController.getRawButton(Constants.SelectButton)){
+				
+				isInvertPressed = false;
+				
+			} else {
+				//Do nothing, button is still pressed
+			}
+			
+		}
 	
 	//Math to calculate going straight
 	private void goStraight() {
@@ -230,9 +278,22 @@ public class Drivetrain {
 				
 		} else {
 			
-			finesse = 1.0;
+			finesse = 0.3;
 			
 		}
+		
+	}
+	
+	public static double getBottomOmniDistance() {
+		
+		return bottomOmniMotor.getSelectedSensorPosition(0) * Constants.OmniEncoderInchPerRotation;
+	
+	}
+	
+	public static double getTopOmniDistance() {
+		
+		topOmniMotor.setSensorPhase(true);
+		return topOmniMotor.getSelectedSensorPosition(0) * Constants.OmniEncoderInchPerRotation;
 		
 	}
 	
