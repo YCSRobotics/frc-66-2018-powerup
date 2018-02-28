@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.Joystick;
 public class Drivetrain {
 	
 	private static boolean isInvertPressed = false;
+	
 	//Initialize Controllers
 	Joystick DriveController = new Joystick(Constants.DriveController);
 	Joystick OperatorController = new Joystick(Constants.OperatorController);
@@ -18,15 +19,14 @@ public class Drivetrain {
 	private static TalonSRX leftSlaveMotor = Constants.LeftSlaveMotor;
 	private static TalonSRX rightMasterMotor = Constants.RightMasterMotor;
 	private static TalonSRX rightSlaveMotor = Constants.RightSlaveMotor;
-	private static TalonSRX topOmniMotor = Constants.OmniTopMotor;
-	private static TalonSRX bottomOmniMotor = Constants.OmniBottomMotor;
+	private static TalonSRX topSlideMotor = Constants.SlideTopMotor;
+	private static TalonSRX bottomSlideMotor = Constants.SlideBottomMotor;
 	
 	//Motor Variables
 	private double leftMotorCommand = 0.0;
 	private double rightMotorCommand = 0.0;
-	private double bottomOmniMotorCommand = 0.0;
-	private double topOmniMotorCommand = 0.0;
-	private double liftMotorCommand = 0.0;
+	private double bottomSlideMotorCommand = 0.0;
+	private double topSlideMotorCommand = 0.0;
 	
 	//Gyro
 	private static ADXRS450_Gyro gyro = Constants.Gyro;
@@ -54,9 +54,9 @@ public class Drivetrain {
 		rightMasterMotor.configOpenloopRamp(Constants.DriveRampRate, 5);
 		rightSlaveMotor.set(ControlMode.Follower, rightMasterMotor.getDeviceID());
 		
-		//Ramping Omni
-		//bottomOmniMotor.configOpenloopRamp(Constants.OmniRampRate, 5);
-		topOmniMotor.configOpenloopRamp(Constants.OmniRampRate, 5);
+		//Ramping slide
+		//bottomslideMotor.configOpenloopRamp(Constants.slideRampRate, 5);
+		topSlideMotor.configOpenloopRamp(Constants.SlideRampRate, 5);
 		
 		//Calibrate Gyro
 		gyro.calibrate();
@@ -98,9 +98,9 @@ public class Drivetrain {
 			leftMasterMotor.set(ControlMode.PercentOutput, (Constants.LeftDriveReversed ? -1:1) * leftMotorCommand * driveGain);
 			rightMasterMotor.set(ControlMode.PercentOutput, (Constants.RightDriveReversed ? -1:1) * rightMotorCommand * driveGain);
 			
-			//update omnis
-			bottomOmniMotor.set(ControlMode.PercentOutput, bottomOmniMotorCommand);
-			topOmniMotor.set(ControlMode.PercentOutput, -topOmniMotorCommand);
+			//update slides
+			bottomSlideMotor.set(ControlMode.PercentOutput, bottomSlideMotorCommand);
+			topSlideMotor.set(ControlMode.PercentOutput, -topSlideMotorCommand);
 
 			
 		} else {
@@ -137,12 +137,12 @@ public class Drivetrain {
 			leftMotorCommand = t_left + skim(t_right);
 			rightMotorCommand = t_right + skim(t_left);
 
+			//limit the negative and positive motor outputs to finesse
 			leftMotorCommand = Math.max(-finesse, (Math.min(leftMotorCommand, finesse)));
 			rightMotorCommand = Math.max(-finesse, (Math.min(rightMotorCommand, finesse)));
 			
-			bottomOmniMotorCommand = Math.max(-finesse, (Math.min(getLeftOmniInput(), finesse)));
-			topOmniMotorCommand = Math.max(-finesse, (Math.min(getRightOmniInput(), finesse)));
-			//liftMotorCommand = Math.max(-finesse, (Math.min(getLiftInput(), finesse)));
+			bottomSlideMotorCommand = Math.max(-finesse, (Math.min(getLeftSlideInput(), finesse)));
+			topSlideMotorCommand = Math.max(-finesse, (Math.min(getRightSlideInput(), finesse)));
 
 	}
 	
@@ -175,23 +175,23 @@ public class Drivetrain {
 		
 	}
 	
-	//calculate left omni throttle
-	private double getLeftOmniInput() {
+	//calculate left slide throttle
+	private double getLeftSlideInput() {
 		
 		double w;
 		w = DriveController.getRawAxis(Constants.LeftJoyX);
 		
-		return (Math.abs(w) > Constants.OmniDeadZoneLimit ? -(w) : 0.0);
+		return (Math.abs(w) > Constants.SlideDeadZoneLimit ? -(w) : 0.0);
 		
 	}
 	
-	//Calculate right omni throttle
-	private double getRightOmniInput() {
+	//Calculate right slide throttle
+	private double getRightSlideInput() {
 		
 		double z;
 		z = DriveController.getRawAxis(Constants.LeftJoyX);
 		
-		return (Math.abs(z) > Constants.OmniDeadZoneLimit ? -(z) : 0.0);
+		return (Math.abs(z) > Constants.SlideDeadZoneLimit ? -(z) : 0.0);
 		
 	}
 		
@@ -205,6 +205,7 @@ public class Drivetrain {
 
 	}
 	
+	//is invert button pressed or has been pressed, then toggle invert
 	private void setInvert(){
 			
 			if((DriveController.getRawButton(Constants.SelectButton)) && (!isInvertPressed)) {
@@ -226,7 +227,9 @@ public class Drivetrain {
 				isInvertPressed = false;
 				
 			} else {
+				
 				//Do nothing, button is still pressed
+				
 			}
 			
 		}
@@ -254,6 +257,7 @@ public class Drivetrain {
 		
 	}
 	
+	//Finese Mode, Slows Drivetrain down.
 	private void getFinesseInput() {
 		
 		if (DriveController.getRawButton(Constants.RightBumper)) {
@@ -268,16 +272,19 @@ public class Drivetrain {
 		
 	}
 	
-	public static double getBottomOmniDistance() {
+	//gets the bottom and top slide distance. 
+	public static double getBottomSlideDistance() {
 		
-		return bottomOmniMotor.getSelectedSensorPosition(0) * Constants.OmniEncoderInchPerRotation;
+		return bottomSlideMotor.getSelectedSensorPosition(0) * 
+				Constants.SlideEncoderInchPerRotation;
 	
 	}
 	
-	public static double getTopOmniDistance() {
+	public static double getTopSlideDistance() {
 		
-		topOmniMotor.setSensorPhase(true);
-		return topOmniMotor.getSelectedSensorPosition(0) * Constants.OmniEncoderInchPerRotation;
+		topSlideMotor.setSensorPhase(true);
+		return topSlideMotor.getSelectedSensorPosition(0) * 
+				Constants.SlideEncoderInchPerRotation;
 		
 	}
 	
