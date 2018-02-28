@@ -16,23 +16,80 @@ public class Elevator {
 	
 	//Elevator Variables
 	public double elevatorPosition;
+	public double commandedPosition;
+	
+	public boolean isElevatorZeroed = false;
+	public boolean isManualControl = false;
+	public boolean isPositionControl = false;
 	
 	public Elevator(){
 		//Ramping Lift
 		elevatorMotor.configOpenloopRamp(0.0, 5);
 	}
 	
+	public void initElevator(){
+		//Put any initialization routines here
+	}
+	
 	public void updateElevator(){
 		
 		double elevatorInput = getElevatorInput();
+		elevatorPosition = getElevatorPosition();
 		
-		if (Math.abs(elevatorInput) > Constants.DeadZoneLimit){
+		if(Math.abs(elevatorInput) > 0.0)
+		{
+			//Elevator is being controlled by the joystick, Manual Control
+			isManualControl = true;
+			isPositionControl = false;
 			elevatorMotor.set(ControlMode.PercentOutput, getElevatorInput());
-		}else { 
+		}
+		else if (!isElevatorZeroed) { 
+			//Joystick released but relative position is unknown, so can't move to relative position
+			isManualControl = true;
+			isPositionControl = false; 
 			elevatorMotor.set(ControlMode.PercentOutput, 0.0);
 		}
+		else if((isManualControl)){
+			//Joystick was just released AND elevator is zeroed, so do position control on current position
+			isManualControl = false;
+			isPositionControl = true;
+			elevatorMotor.set(ControlMode.Position, elevatorPosition);
+		}
+		else if (OperatorController.getRawButton(Constants.Startbutton)){
+			//Move to Low Carry Position
+			isManualControl = false;
+			isPositionControl = true;
+			this.goToPosition(Constants.LowCarryPosition);
+		}
+		else if (OperatorController.getRawButton(Constants.ButtonX)){
+			//Move to Switch Position
+			isManualControl = false;
+			isPositionControl = true;
+			this.goToPosition(Constants.SwitchPosition);
+		}
+		else if (OperatorController.getRawButton(Constants.ButtonY)){
+			//Move to Low Scale Position
+			isManualControl = false;
+			isPositionControl = true;
+			this.goToPosition(Constants.LowScalePosition);
+		}
+		else if (OperatorController.getRawButton(Constants.ButtonA)){
+			//Move to Mid Scale Position
+			isManualControl = false;
+			isPositionControl = true;
+			this.goToPosition(Constants.MidScalePosition);
+		}
+		else if (OperatorController.getRawButton(Constants.ButtonB)){
+			//Move to High Scale Position
+			isManualControl = false;
+			isPositionControl = true;
+			this.goToPosition(Constants.HighScalePosition);
+		}
+		else {
+			//Do nothing, Position Control already active
+		}
 		
-		elevatorPosition = getElevatorPosition();
+		
 	}
 	
 	private double getElevatorInput() {
@@ -47,6 +104,11 @@ public class Elevator {
 	public static double getElevatorPosition(){
 		elevatorMotor.setSensorPhase(true);
 		return elevatorMotor.getSelectedSensorPosition(0);
+	}
+	
+	public void goToPosition(double targetPosition){
+		//Only call this if elevator position is zeroed!!!!
+		elevatorMotor.set(ControlMode.Position, targetPosition);
 	}
 	
 	public void zeroElevatorPosition(){

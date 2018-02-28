@@ -106,4 +106,11 @@ public class Constants {
 	public static final int SelectButton = 7;
 	public static final int Startbutton = 8;
 	
+	//Elevator Positions
+	public static final double LowCarryPosition = 7825;//estimated 3"
+	public static final double SwitchPosition = 31200;//estimated 12"
+	public static final double LowScalePosition = 124800;//estimated 48"
+	public static final double MidScalePosition = 145600;//estimated 56"
+	public static final double HighScalePosition = 187200;//estimated 72"
+	
 }
