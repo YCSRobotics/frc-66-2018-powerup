@@ -17,6 +17,8 @@ public class DashboardState {
 		SmartDashboard.putNumber("BottomDistance", Drivetrain.getBottomOmniDistance());
 		SmartDashboard.putNumber("TopDistance", Drivetrain.getTopOmniDistance());
 		
+		SmartDashboard.putNumber("Elevator Position", Elevator.getElevatorPosition());
+		
 	}
 	
 }

@@ -25,8 +25,10 @@ public class Robot extends TimedRobot {
 	private SendableChooser<String> m_chooser = new SendableChooser<>();
 	
 	Drivetrain drivetrain = new Drivetrain();
+	Elevator elevator = new Elevator();
 	DashboardState dashboard = new DashboardState();
 	Intake intake = new Intake();
+	
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -37,6 +39,8 @@ public class Robot extends TimedRobot {
 		m_chooser.addDefault("Default Auto", kDefaultAuto);
 		m_chooser.addObject("My Auto", kCustomAuto);
 		SmartDashboard.putData("Auto choices", m_chooser);
+		
+		elevator.zeroElevatorPosition();
 	}
 
 	/**
@@ -74,6 +78,9 @@ public class Robot extends TimedRobot {
 		}
 	}
 
+	public void teleopInit(){
+		elevator.zeroElevatorPosition();
+	}
 	/**
 	 * This function is called periodically during operator control.
 	 */
@@ -83,6 +90,7 @@ public class Robot extends TimedRobot {
 		intake.updateIntake();
 		dashboard.updateSmartDashboard();
 		drivetrain.updateDrivetrain();
+		elevator.updateElevator();
 		
 	}
 

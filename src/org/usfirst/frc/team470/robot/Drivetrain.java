@@ -20,7 +20,6 @@ public class Drivetrain {
 	private static TalonSRX rightSlaveMotor = Constants.RightSlaveMotor;
 	private static TalonSRX topOmniMotor = Constants.OmniTopMotor;
 	private static TalonSRX bottomOmniMotor = Constants.OmniBottomMotor;
-	private static TalonSRX liftMotor = Constants.LiftMotor;
 	
 	//Motor Variables
 	private double leftMotorCommand = 0.0;
@@ -54,9 +53,6 @@ public class Drivetrain {
 		//Ramping Right
 		rightMasterMotor.configOpenloopRamp(Constants.DriveRampRate, 5);
 		rightSlaveMotor.set(ControlMode.Follower, rightMasterMotor.getDeviceID());
-		
-		//Ramping Lift
-		liftMotor.configOpenloopRamp(Constants.DriveRampRate, 5);
 		
 		//Ramping Omni
 		//bottomOmniMotor.configOpenloopRamp(Constants.OmniRampRate, 5);
@@ -96,8 +92,6 @@ public class Drivetrain {
 		}
 	
 		setTargetSpeeds(targetThrottle, targetTurn);
-		
-		liftMotor.set(ControlMode.PercentOutput, getLiftInput());
 		
 		if(!isInverted){
 			
@@ -148,7 +142,7 @@ public class Drivetrain {
 			
 			bottomOmniMotorCommand = Math.max(-finesse, (Math.min(getLeftOmniInput(), finesse)));
 			topOmniMotorCommand = Math.max(-finesse, (Math.min(getRightOmniInput(), finesse)));
-			liftMotorCommand = Math.max(-finesse, (Math.min(getLiftInput(), finesse)));
+			//liftMotorCommand = Math.max(-finesse, (Math.min(getLiftInput(), finesse)));
 
 	}
 	
@@ -200,17 +194,7 @@ public class Drivetrain {
 		return (Math.abs(z) > Constants.OmniDeadZoneLimit ? -(z) : 0.0);
 		
 	}
-	
-	//Calculate right omni throttle
-	private double getLiftInput() {
 		
-		double z;
-		z = OperatorController.getRawAxis(Constants.LeftJoyY);
-		
-		return (Math.abs(z) > Constants.OmniDeadZoneLimit ? -(z) : 0.0);
-		
-	}	
-	
 	//Calculate turn input
 	private double getTurnInput() {
 		

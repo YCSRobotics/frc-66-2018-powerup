@@ -34,6 +34,7 @@ public class SensorData {
 			return ave;
 			
 		}
+
 		
 		public void resetEncoder() {
 			
