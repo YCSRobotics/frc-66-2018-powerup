@@ -2,10 +2,15 @@ package org.usfirst.frc.team470.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Talon;
 
 public class Intake {
 
-	private static Solenoid intake = Constants.Intake;
+	private static Talon leftIntakeMotor = Constants.IntakeLeftMotor;
+	private static Talon rightIntakeMotor = Constants.IntakeRightMotor;
+	
+	private static Solenoid intakeSolenoid = Constants.IntakeSolenoid;
+	
 	Joystick OperatorController = new Joystick(Constants.OperatorController);
 	
 	private boolean isActive = false;
@@ -17,12 +22,29 @@ public class Intake {
 		
 		if (!isActive) {
 			
-			intake.set(false);
+			intakeSolenoid.set(false);
 			
 		} else {
 			
-			intake.set(true);
+			intakeSolenoid.set(true);
 			
+		}
+		
+		//Control intake motors
+		if(OperatorController.getRawButton(Constants.ButtonA)){
+			
+			leftIntakeMotor.set(1.0);
+			rightIntakeMotor.set(-1.0);
+			
+		}else if(OperatorController.getRawButton(Constants.ButtonB)){
+			
+			leftIntakeMotor.set(-1.0);
+			rightIntakeMotor.set(1.0);
+			
+		}else{
+			
+			leftIntakeMotor.set(0.0);
+			rightIntakeMotor.set(0.0);
 		}
 		
 	}

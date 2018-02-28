@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.CounterBase;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Talon;
 
 /* Only variables that have a fixed (never changing) value should be put here */
 
@@ -20,7 +21,10 @@ public class Constants {
 	public static final TalonSRX OmniTopMotor = new TalonSRX(5);
 	public static final TalonSRX LiftMotor = new TalonSRX(6);
 
-	public static final Solenoid Intake = new Solenoid(0);
+	public static final Talon IntakeLeftMotor = new Talon(0);
+	public static final Talon IntakeRightMotor = new Talon(1);
+	
+	public static final Solenoid IntakeSolenoid = new Solenoid(0);
 	
 	public static final boolean EnableDriveBrake = false;
 	public static final double DeadZoneLimit = 0.3;
