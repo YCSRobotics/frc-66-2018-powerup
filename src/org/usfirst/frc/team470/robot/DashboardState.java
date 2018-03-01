@@ -18,6 +18,13 @@ public class DashboardState {
 		SmartDashboard.putNumber("TopDistance", Drivetrain.getTopOmniDistance());
 		
 		SmartDashboard.putNumber("Elevator Position", Elevator.getElevatorPosition());
+		SmartDashboard.putNumber("Elevator Target Position", Elevator.commandedPosition);
+		
+		SmartDashboard.putBoolean("Is Position Zeroed", Elevator.isElevatorZeroed);
+		SmartDashboard.putBoolean("Manual Control", Elevator.isManualControl);
+		SmartDashboard.putBoolean("Position Control", Elevator.isPositionControl);
+		SmartDashboard.putBoolean("Lower Limit Active", Elevator.isLowerLimitPressed());
+		SmartDashboard.putBoolean("Forward Limit Active", Elevator.isUpperLimitPressed());
 		
 	}
 	

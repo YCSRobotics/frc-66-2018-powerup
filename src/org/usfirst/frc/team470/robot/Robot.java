@@ -40,7 +40,7 @@ public class Robot extends TimedRobot {
 		m_chooser.addObject("My Auto", kCustomAuto);
 		SmartDashboard.putData("Auto choices", m_chooser);
 		
-		elevator.zeroElevatorPosition();
+		//elevator.zeroElevatorPosition();
 	}
 
 	/**
@@ -79,7 +79,7 @@ public class Robot extends TimedRobot {
 	}
 
 	public void teleopInit(){
-		elevator.zeroElevatorPosition();
+		//elevator.zeroElevatorPosition();
 	}
 	/**
 	 * This function is called periodically during operator control.

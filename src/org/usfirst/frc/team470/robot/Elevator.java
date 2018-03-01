@@ -1,6 +1,9 @@
 package org.usfirst.frc.team470.robot;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
+import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.Joystick;
@@ -16,15 +19,28 @@ public class Elevator {
 	
 	//Elevator Variables
 	public double elevatorPosition;
-	public double commandedPosition;
+	public static double commandedPosition;
 	
-	public boolean isElevatorZeroed = false;
-	public boolean isManualControl = false;
-	public boolean isPositionControl = false;
+	public static boolean isElevatorZeroed = false;
+	public static boolean isManualControl = false;
+	public static boolean isPositionControl = false;
 	
 	public Elevator(){
 		//Ramping Lift
-		elevatorMotor.configOpenloopRamp(0.0, 5);
+		elevatorMotor.configOpenloopRamp(0.0, 10);
+		
+		//Configure Feedback device - arg0 Feedback type, arg1 PID loop, arg2 Timeout in mS
+		elevatorMotor.setSensorPhase(true);
+		elevatorMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 10);
+		elevatorMotor.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen, 0);
+		elevatorMotor.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen, 0);
+		
+		//Configure PIDF Terms
+		elevatorMotor.selectProfileSlot(0, 0);
+		elevatorMotor.config_kP(0, .125, 10);
+		elevatorMotor.config_kI(0, 0, 10);
+		elevatorMotor.config_kD(0, 0, 10);
+		elevatorMotor.config_kF(0, 0, 10);
 	}
 	
 	public void initElevator(){
@@ -35,6 +51,11 @@ public class Elevator {
 		
 		double elevatorInput = getElevatorInput();
 		elevatorPosition = getElevatorPosition();
+		
+		if((elevatorMotor.getSensorCollection().isRevLimitSwitchClosed()) &&
+		   (!isElevatorZeroed)){
+			this.zeroElevatorPosition();
+		}
 		
 		if(Math.abs(elevatorInput) > 0.0)
 		{
@@ -53,9 +74,10 @@ public class Elevator {
 			//Joystick was just released AND elevator is zeroed, so do position control on current position
 			isManualControl = false;
 			isPositionControl = true;
-			elevatorMotor.set(ControlMode.Position, elevatorPosition);
+			this.goToPosition(elevatorPosition);
+			//elevatorMotor.set(ControlMode.Position, elevatorPosition);
 		}
-		else if (OperatorController.getRawButton(Constants.Startbutton)){
+		/*else if (OperatorController.getRawButton(Constants.Startbutton)){
 			//Move to Low Carry Position
 			isManualControl = false;
 			isPositionControl = true;
@@ -84,7 +106,7 @@ public class Elevator {
 			isManualControl = false;
 			isPositionControl = true;
 			this.goToPosition(Constants.HighScalePosition);
-		}
+		}*/
 		else {
 			//Do nothing, Position Control already active
 		}
@@ -101,9 +123,17 @@ public class Elevator {
 		
 	}
 	
+	
 	public static double getElevatorPosition(){
-		elevatorMotor.setSensorPhase(true);
 		return elevatorMotor.getSelectedSensorPosition(0);
+	}
+	
+	public static boolean isLowerLimitPressed(){
+		return (elevatorMotor.getSensorCollection().isRevLimitSwitchClosed());
+	}
+	
+	public static boolean isUpperLimitPressed(){
+		return (elevatorMotor.getSensorCollection().isFwdLimitSwitchClosed());
 	}
 	
 	public void goToPosition(double targetPosition){
@@ -112,6 +142,7 @@ public class Elevator {
 	}
 	
 	public void zeroElevatorPosition(){
+		isElevatorZeroed = true;
 		elevatorMotor.setSelectedSensorPosition(0, 0, 0);
 	}
 }
