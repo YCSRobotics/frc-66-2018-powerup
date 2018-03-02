@@ -119,7 +119,7 @@ public class Elevator {
 		double z;
 		z = OperatorController.getRawAxis(Constants.LeftJoyY);
 		
-		return (Math.abs(z) > Constants.SlideDeadZoneLimit ? -(z) : 0.0);
+		return (Math.abs(z) > Constants.DeadZoneLimit ? -(z) : 0.0);
 		
 	}
 	

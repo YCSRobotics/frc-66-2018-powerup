@@ -13,14 +13,14 @@ public class Intake {
 	
 	Joystick OperatorController = new Joystick(Constants.OperatorController);
 	
-	private boolean isActive = false;
+	private static boolean isIntakeSolenoidActive = false;
 	private boolean isButtonPressed = false;
 	
 	public void updateIntake() {
 		
-		intakeButtonStatus();
+		determineIntakeRaiseLowerButtonStatus();
 		
-		if (!isActive) {
+		if (!isIntakeSolenoidActive) {
 			
 			intakeSolenoid.set(false);
 			
@@ -31,7 +31,7 @@ public class Intake {
 		}
 		
 		//Control intake motors
-		if(OperatorController.getRawButton(Constants.ButtonA)){
+		/*if(OperatorController.getRawButton(Constants.ButtonA)){
 			
 			leftIntakeMotor.set(1.0);
 			rightIntakeMotor.set(-1.0);
@@ -45,23 +45,24 @@ public class Intake {
 			
 			leftIntakeMotor.set(0.0);
 			rightIntakeMotor.set(0.0);
-		}
+		}*/
 		
+		setIntakeSpeed(getIntakeInput());	
 	}
 	
-	private void intakeButtonStatus(){
+	private void determineIntakeRaiseLowerButtonStatus(){
 		
 		if((OperatorController.getRawButton(Constants.RightBumper)) && (!isButtonPressed)) {
 					
 			isButtonPressed = true;
 					
-		    if(isActive) {
+		    if(isIntakeSolenoidActive) {
 		    	
-		    	isActive = false;
+		    	isIntakeSolenoidActive = false;
 		    	
 			} else {
 				
-				isActive = true;
+				isIntakeSolenoidActive = true;
 				
 			}
 		    
@@ -73,5 +74,24 @@ public class Intake {
 			//Do nothing, button is still pressed
 		}
 		
+	}
+	
+	private double getIntakeInput() {
+		
+		double z;
+		z = OperatorController.getRawAxis(Constants.RightJoyY);
+		
+		return (Math.abs(z) > Constants.DeadZoneLimit ? -(z) : 0.0);
+		
+	}
+	
+	public static void setIntakeSpeed(double speed){
+		leftIntakeMotor.set(speed);
+		rightIntakeMotor.set(-speed);
+	}
+	
+	public static void setIntakeSolenoid(boolean command){
+		isIntakeSolenoidActive = command;
+		intakeSolenoid.set(command);
 	}
 }
