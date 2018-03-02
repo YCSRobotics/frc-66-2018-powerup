@@ -77,7 +77,7 @@ public class Elevator {
 			this.goToPosition(elevatorPosition);
 			//elevatorMotor.set(ControlMode.Position, elevatorPosition);
 		}
-		/*else if (OperatorController.getRawButton(Constants.Startbutton)){
+		else if (OperatorController.getRawButton(Constants.Startbutton)){
 			//Move to Low Carry Position
 			isManualControl = false;
 			isPositionControl = true;
@@ -106,7 +106,7 @@ public class Elevator {
 			isManualControl = false;
 			isPositionControl = true;
 			this.goToPosition(Constants.HighScalePosition);
-		}*/
+		}
 		else {
 			//Do nothing, Position Control already active
 		}
@@ -119,7 +119,7 @@ public class Elevator {
 		double z;
 		z = OperatorController.getRawAxis(Constants.LeftJoyY);
 		
-		return (Math.abs(z) > Constants.OmniDeadZoneLimit ? -(z) : 0.0);
+		return (Math.abs(z) > Constants.SlideDeadZoneLimit ? -(z) : 0.0);
 		
 	}
 	
@@ -138,6 +138,7 @@ public class Elevator {
 	
 	public void goToPosition(double targetPosition){
 		//Only call this if elevator position is zeroed!!!!
+		commandedPosition = targetPosition;
 		elevatorMotor.set(ControlMode.Position, targetPosition);
 	}
 	

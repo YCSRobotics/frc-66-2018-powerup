@@ -12,13 +12,13 @@ import edu.wpi.first.wpilibj.Talon;
 
 public class Constants {
 	
-	//Motor Configuration
+	//Motor and Solenoid Information
 	public static final TalonSRX LeftMasterMotor = new TalonSRX(0);
 	public static final TalonSRX LeftSlaveMotor = new TalonSRX(1);
 	public static final TalonSRX RightMasterMotor = new TalonSRX(2);
 	public static final TalonSRX RightSlaveMotor = new TalonSRX(3);
-	public static final TalonSRX OmniBottomMotor = new TalonSRX(4);
-	public static final TalonSRX OmniTopMotor = new TalonSRX(5);
+	public static final TalonSRX SlideBottomMotor = new TalonSRX(4);
+	public static final TalonSRX SlideTopMotor = new TalonSRX(5);
 	public static final TalonSRX ElevatorMotor = new TalonSRX(6);
 
 	public static final Talon IntakeLeftMotor = new Talon(0);
@@ -28,19 +28,19 @@ public class Constants {
 	
 	public static final boolean EnableDriveBrake = false;
 	public static final double DeadZoneLimit = 0.3;
-	public static final double OmniDeadZoneLimit = 0.35;
+	public static final double SlideDeadZoneLimit = 0.35;
 	
 	//Gains
 	public static final double SkimGain = 0.15;
 	public static final double TurnGain = 1.0;
 	public static final double FinesseGain = 0.6;
 	public static final double GyroGain = 0.05;
-	public static final double LiftMaxSpeed = 1.0;
-	public static final double LiftGain = 0.2;
 	
 	//Motor Reverse
 	public static final boolean LeftDriveReversed   = false;
 	public static final boolean RightDriveReversed  = true;
+	
+	//Slows drivetrain down to specified power
 	public static final double Finesse = 0.3;
 	
 	//This is the min ramp rate per CTRE documentation
@@ -50,7 +50,7 @@ public class Constants {
 	//This is the time to ramp from 0V to +/-12V in sec
 	public static final double DriveRampTime = 0.25; 
 	public static final double DriveRampRate = 0.5;
-	public static final double OmniRampRate = 0.5;
+	public static final double SlideRampRate = 0.5;
 	
 	//Controllers
 	public static final int DriveController = 0;
@@ -88,7 +88,7 @@ public class Constants {
             CounterBase.EncodingType.k4X);
 	
 	public static final int CountsPerRevolution = 4096;
-	public static final double OmniEncoderInchPerRotation = 1/(CountsPerRevolution/(WheelDiameter*PI));
+	public static final double SlideEncoderInchPerRotation = 1/(CountsPerRevolution/(WheelDiameter*PI));
 	
 	//Controller Mapping
 	public static final int LeftJoyX = 0;
