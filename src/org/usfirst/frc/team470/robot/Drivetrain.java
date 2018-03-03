@@ -1,5 +1,7 @@
 package org.usfirst.frc.team470.robot;
 
+import org.usfirst.frc.team470.robot.Constants;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
@@ -36,13 +38,22 @@ public class Drivetrain {
 	private double driveGain = 1.0;
 	private boolean isInverted = false;
 	
-	private static double targetThrottle = 0.0;
+	private static double targetYThrottle = 0.0;//Fwd/Rwd Throttle
+	private static double targetXThrottle = 0.0;//Left/Right Throttle
 	private static double targetTurn = 0.0;
 	
 	private static double finesse = 1.0;
 	
+	private static double yTargetDistance = 0.0;
+	private static double xTargetDistance = 0.0;
+	private static double targetAngle = 0.0;
+	
+	public static boolean isMovingYDistance = false;
+	public static boolean isMovingXDistance = false;
+	public static boolean isTurning = false;
+	
 	//Sensors
-	SensorData sensors = new SensorData();
+	static SensorData sensors = new SensorData();
 	
 	public Drivetrain() {
 		
@@ -55,7 +66,7 @@ public class Drivetrain {
 		rightSlaveMotor.set(ControlMode.Follower, rightMasterMotor.getDeviceID());
 		
 		//Ramping slide
-		//bottomslideMotor.configOpenloopRamp(Constants.slideRampRate, 5);
+		bottomSlideMotor.configOpenloopRamp(Constants.SlideRampRate, 5);
 		topSlideMotor.configOpenloopRamp(Constants.SlideRampRate, 5);
 		
 		//Calibrate Gyro
@@ -64,12 +75,14 @@ public class Drivetrain {
 	}
 	
 	//Main drivetrain movement code
-	public void updateDrivetrain() {
+	public void updateDrivetrainTeleop() {
 
 		isDriveStraight = isStraightButtonPressed();
 
-		targetThrottle = getThrottleInput();
+		targetYThrottle = getThrottleInput();
+		targetXThrottle = getSlideInput();
 		targetTurn = getTurnInput();
+		
 		getFinesseInput();
 		setInvert();
 
@@ -86,12 +99,12 @@ public class Drivetrain {
 		//teleop as normal
 		} else {
 			//Do regular teleop control
-			targetThrottle = getThrottleInput();
+			targetYThrottle = getThrottleInput();
 			targetTurn = getTurnInput();
 			isGyroZeroed = false;			
 		}
 	
-		setTargetSpeeds(targetThrottle, targetTurn);
+		setTargetSpeeds(targetYThrottle, targetXThrottle, targetTurn);
 		
 		if(!isInverted){
 			
@@ -112,16 +125,66 @@ public class Drivetrain {
 			
 	}
 	
+	public void updateDrivetrainAuton(){
+		double y_distance_error;
+		double x_distance_error;
+		
+		if((isMovingYDistance)||
+		   (isMovingXDistance)){
+			//Move distance without tracking vision target
+			y_distance_error = yTargetDistance - sensors.getMainAvgDistance();
+			x_distance_error = xTargetDistance - getTopSlideDistance();
+			
+			if(Math.abs(y_distance_error) <= Constants.TargetDistanceThreshold){
+				//Robot has reached target
+				targetYThrottle = 0.0;
+				isMovingYDistance = false;
+			}
+		
+			if(Math.abs(x_distance_error) <= Constants.TargetDistanceThreshold){
+				//Robot has reached target
+				targetXThrottle = 0.0;
+				isMovingXDistance = false;
+			}
+
+			targetTurn = -1*(gyro.getAngle()*Constants.GyroGain);
+		}
+		else if(isTurning)
+		{			
+			if(Math.abs(gyro.getAngle()) >= targetAngle)
+			{
+				targetXThrottle = 0.0;
+				targetXThrottle = 0.0;
+				targetTurn = 0.0;
+				isTurning = false;
+			}
+			else
+			{
+				//Do Nothing while turning
+			}
+		}
+		else{
+			//No Auton move in progress
+			targetYThrottle = 0.0;
+			targetXThrottle = 0.0;
+			targetTurn = 0.0;
+		}
+		
+		setTargetSpeeds(targetYThrottle, targetXThrottle, targetTurn);
+		
+		
+	}
+	
 	//compute turn gain
-	private void setTargetSpeeds(double throttle, double turn){
+	private void setTargetSpeeds(double ythrottle, double xthrottle, double turn){
 			
 			double t_left;
 			double t_right;
 			
 			//Amp up turn only for large amounts of throttle, already dead zoned
-			if(throttle > 0) {
+			if(ythrottle > 0) {
 				
-				turn = turn * (Constants.TurnGain * Math.abs(throttle));
+				turn = turn * (Constants.TurnGain * Math.abs(ythrottle));
 				
 			} else {
 				
@@ -130,8 +193,8 @@ public class Drivetrain {
 			}
 	
 			
-			t_left = throttle + turn;
-			t_right = throttle - turn;
+			t_left = ythrottle + turn;
+			t_right = ythrottle - turn;
 			
 			//apply the turn to throttle
 			leftMotorCommand = t_left + skim(t_right);
@@ -141,8 +204,8 @@ public class Drivetrain {
 			leftMotorCommand = Math.max(-finesse, (Math.min(leftMotorCommand, finesse)));
 			rightMotorCommand = Math.max(-finesse, (Math.min(rightMotorCommand, finesse)));
 			
-			bottomSlideMotorCommand = Math.max(-finesse, (Math.min(getLeftSlideInput(), finesse)));
-			topSlideMotorCommand = Math.max(-finesse, (Math.min(getRightSlideInput(), finesse)));
+			bottomSlideMotorCommand = Math.max(-Constants.SlidePowerLimit, (Math.min(xthrottle, Constants.SlidePowerLimit)));
+			topSlideMotorCommand = Math.max(-Constants.SlidePowerLimit, (Math.min(xthrottle, Constants.SlidePowerLimit)));
 
 	}
 	
@@ -176,22 +239,12 @@ public class Drivetrain {
 	}
 	
 	//calculate left slide throttle
-	private double getLeftSlideInput() {
+	private double getSlideInput() {
 		
 		double w;
 		w = DriveController.getRawAxis(Constants.LeftJoyX);
 		
 		return (Math.abs(w) > Constants.SlideDeadZoneLimit ? -(w) : 0.0);
-		
-	}
-	
-	//Calculate right slide throttle
-	private double getRightSlideInput() {
-		
-		double z;
-		z = DriveController.getRawAxis(Constants.LeftJoyX);
-		
-		return (Math.abs(z) > Constants.SlideDeadZoneLimit ? -(z) : 0.0);
 		
 	}
 		
@@ -237,7 +290,7 @@ public class Drivetrain {
 	//Math to calculate going straight
 	private void goStraight() {
 		
-		targetThrottle = getThrottleInput();		
+		targetYThrottle = getThrottleInput();		
 		targetTurn = -1 * (gyro.getAngle() * Constants.GyroGain);
 		
 	}
@@ -265,9 +318,7 @@ public class Drivetrain {
 			finesse = Constants.Finesse;
 				
 		} else {
-			
-			finesse = 0.3;
-			
+			finesse = 1.0;
 		}
 		
 	}
@@ -275,8 +326,7 @@ public class Drivetrain {
 	//gets the bottom and top slide distance. 
 	public static double getBottomSlideDistance() {
 		
-		return bottomSlideMotor.getSelectedSensorPosition(0) * 
-				Constants.SlideEncoderInchPerRotation;
+		return bottomSlideMotor.getSelectedSensorPosition(0) * Constants.SlideEncoderInchPerRotation;
 	
 	}
 	
@@ -286,6 +336,39 @@ public class Drivetrain {
 		return topSlideMotor.getSelectedSensorPosition(0) * 
 				Constants.SlideEncoderInchPerRotation;
 		
+	}
+	
+	public static void setMoveDistance(double xDistance, double yDistance, double xThrottle, double yThrottle){
+		
+		sensors.resetEncoder();
+		
+		double currentYDistance = sensors.getMainAvgDistance();
+		double currentXDistance = getTopSlideDistance();
+		
+		yTargetDistance = currentYDistance + yDistance;
+		xTargetDistance = currentXDistance + xDistance;
+		
+		if(Math.abs(yDistance) > Constants.TargetDistanceThreshold)
+		{
+    		isMovingYDistance = true;
+    		targetYThrottle = yThrottle;
+		}
+    	else
+    	{
+    		isMovingYDistance = false;
+    		targetYThrottle = 0.0;
+    	}
+		
+		if(Math.abs(xDistance) > Constants.TargetDistanceThreshold)
+		{
+			isMovingXDistance = true;
+			targetXThrottle = xThrottle;
+		}
+		else
+    	{
+    		isMovingXDistance = false;
+			targetXThrottle = 0.0;
+    	}
 	}
 	
 }
