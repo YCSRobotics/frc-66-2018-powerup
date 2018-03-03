@@ -10,8 +10,6 @@ public class AutoRoutine {
 	final static int DO_NOTHING           = 0;
 	final static int CENTER_SWITCH        = 1;
 
-<<<<<<< HEAD
-=======
 	//Autonomous States
     final static int START        			    = 0;
 	final static int MOVE_Y_DISTANCE 			= 1;
@@ -71,5 +69,4 @@ public class AutoRoutine {
 	private void stateActionStop(){
 		Drivetrain.setMoveDistance(0.0, 0.0, 0.0, 0.0);
 	}
->>>>>>> be6edb73da053b560a7a53e5fd942ec3eaa9886f
 }
