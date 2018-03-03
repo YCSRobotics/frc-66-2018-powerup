@@ -108,6 +108,11 @@ public class Constants {
 	public static final int SelectButton = 7;
 	public static final int Startbutton = 8;
 	
+	//Vision Constants
+	public static final double CAMERA_WIDTH = 640;
+	public static final double FIELD_OF_VIEW = 60; //Logitech C270
+	public static final double DEG_PER_PIXEL = FIELD_OF_VIEW/CAMERA_WIDTH;
+	
 	//Elevator Positions
 	public static final double LowCarryPosition  = 5000;//estimated 3"
 	public static final double SwitchPosition    = 10000;//estimated 12"
