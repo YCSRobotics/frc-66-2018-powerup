@@ -7,5 +7,4 @@ import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 
 public class AutoRoutine {
 
-	
 }
