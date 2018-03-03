@@ -50,7 +50,9 @@ public class Constants {
 	//This is the time to ramp from 0V to +/-12V in sec
 	public static final double DriveRampTime = 0.25; 
 	public static final double DriveRampRate = 0.5;
-	public static final double SlideRampRate = 0.5;
+	public static final double SlideRampRate = 1.0;
+	
+	public static final double SlidePowerLimit = 0.5;
 	
 	//Controllers
 	public static final int DriveController = 0;
@@ -112,5 +114,8 @@ public class Constants {
 	public static final double LowScalePosition  = 20000;//estimated 48"
 	public static final double MidScalePosition  = 30000;//estimated 56"
 	public static final double HighScalePosition = 40000;//estimated 72"
+	
+	//Auton Constants
+	public static final double TargetDistanceThreshold = 6.0;
 	
 }
