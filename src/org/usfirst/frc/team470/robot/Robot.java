@@ -49,6 +49,8 @@ public class Robot extends TimedRobot {
 
 	public void disabledPeriodic(){
 		SmartDashboard.putData("Auto choices", m_chooser);
+		elevator.updateElevatorDisabled();
+		dashboard.updateSmartDashboard();
 	}
 	/**
 	 * This autonomous (along with the chooser code above) shows how to select
@@ -63,12 +65,12 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void autonomousInit() {
-		//m_autoSelected = m_chooser.getSelected();
-		m_autoSelected = kCenterAuto;
+		m_autoSelected = m_chooser.getSelected();
+		//m_autoSelected = kCenterAuto;
 		
 		autonomous.setFmsPlateAssignment(DriverStation.getInstance().getGameSpecificMessage());
-		// m_autoSelected = SmartDashboard.getString("Auto Selector",
-		// 		kDefaultAuto);
+		//m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
+		
 		System.out.println("Auto selected: " + m_autoSelected);
 		
 		switch (m_autoSelected) {
@@ -108,7 +110,7 @@ public class Robot extends TimedRobot {
 		intake.updateIntake();
 		dashboard.updateSmartDashboard();
 		drivetrain.updateDrivetrainTeleop();
-		elevator.updateElevator();
+		elevator.updateElevatorTeleop();
 		
 	}
 

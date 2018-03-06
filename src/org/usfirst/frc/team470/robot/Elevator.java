@@ -47,7 +47,18 @@ public class Elevator {
 		//Put any initialization routines here
 	}
 	
-	public void updateElevator(){
+	public void updateElevatorDisabled(){
+		if((elevatorMotor.getSensorCollection().isRevLimitSwitchClosed()) 
+			&& (!isElevatorZeroed)){
+			this.zeroElevatorPosition();
+		}
+	}
+	
+	public void updateElevatorAuton(){
+		
+	}
+	
+	public void updateElevatorTeleop(){
 		
 		double elevatorInput = getElevatorInput();
 		elevatorPosition = getElevatorPosition();
@@ -136,10 +147,13 @@ public class Elevator {
 		return (elevatorMotor.getSensorCollection().isFwdLimitSwitchClosed());
 	}
 	
-	public void goToPosition(double targetPosition){
+	public static void goToPosition(double targetPosition){
 		//Only call this if elevator position is zeroed!!!!
-		commandedPosition = targetPosition;
-		elevatorMotor.set(ControlMode.Position, targetPosition);
+		if(isElevatorZeroed){
+			commandedPosition = targetPosition;
+			elevatorMotor.set(ControlMode.Position, targetPosition);
+		}
+		else{}
 	}
 	
 	public void zeroElevatorPosition(){

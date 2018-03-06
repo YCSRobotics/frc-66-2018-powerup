@@ -1,11 +1,11 @@
 package org.usfirst.frc.team470.robot;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-
-import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+import edu.wpi.first.wpilibj.Timer;
 
 public class AutoRoutine {
+	//Timer for timed delays
+	public Timer timer = new Timer();
+	
 	//Autonomous Routines
 	final static int DO_NOTHING           = 0;
 	final static int CENTER_SWITCH        = 1;
@@ -16,11 +16,12 @@ public class AutoRoutine {
 
 	//Autonomous States
     final static int START        			    = 0;
-	final static int DELAY_1 					= 1;
-    final static int CENTER_TURN_TO_TARGET		= 2;
-	final static int MOVE_Y_DISTANCE 			= 3;
-	final static int MOVE_X_DISTANCE 			= 4;
-	final static int STRAFE_XY_DISTANCE 		= 5;
+	final static int CENTER_SWITCH_DELAY_1 		= 1;
+	final static int CENTER_SWITCH_DELAY_2 		= 2;
+	final static int CENTER_SWITCH_DELAY_3 		= 3;
+    final static int CENTER_TURN_TO_TARGET		= 4;
+	final static int MOVE_Y_DISTANCE_FWD 		= 5;
+	final static int BACKUP				 		= 6;
 	final static int STOP						= 255;
 	
 	public static int selectedAutonRoutine;
@@ -28,10 +29,12 @@ public class AutoRoutine {
 	
 	public static int autonDelayCount = 0;
 	
+	private double alarmTime;
+	
 	public static String fms_plate_assignment; 
 	
 	public AutoRoutine(){
-		
+		timer.start();
 	}
 	
 	public void setSelectedAutonRoutine(int routine){
@@ -51,10 +54,20 @@ public class AutoRoutine {
 		case CENTER_TURN_TO_TARGET:
 			stateActionCenterTurnToTarget();
 			break;
-		case DELAY_1:
-			stateActionDelay1();
-		case MOVE_Y_DISTANCE:
+		case CENTER_SWITCH_DELAY_1:
+			stateActionCenSwDelay1();
+			break;
+		case CENTER_SWITCH_DELAY_2:
+			stateActionCenSwDelay2();
+			break;
+		case CENTER_SWITCH_DELAY_3:
+			stateActionCenSwDelay3();
+			break;
+		case MOVE_Y_DISTANCE_FWD:
 			stateActionMoveYDistance();
+			break;
+		case BACKUP:
+			stateActionBackup();
 			break;
 		case STOP:
 		default:
@@ -64,7 +77,7 @@ public class AutoRoutine {
 	
 	private void stateActionStart(){
 		//Log what the FMS plate assignment is (to argue with FTA)
-		System.out.println("The FMS assignment is: " +  fms_plate_assignment);
+		System.out.println("The received FMS assignment is: " +  fms_plate_assignment);
 		
 		if(selectedAutonRoutine != DO_NOTHING){
 			if(selectedAutonRoutine == CENTER_SWITCH){
@@ -75,6 +88,7 @@ public class AutoRoutine {
 				
 				if(fms_plate_assignment.charAt(0) == 'L'){
 					
+					Elevator.goToPosition(Constants.SwitchPosition);
 					Drivetrain.zeroGyro();
 					Drivetrain.setTurnToTarget(-Constants.CenterTurnToSwitchSpeed,
 												Constants.CenterTurnToSwitchAngle);
@@ -83,8 +97,8 @@ public class AutoRoutine {
 				}
 				else if(fms_plate_assignment.charAt(0) == 'R')
 				{
+					Elevator.goToPosition(Constants.SwitchPosition);
 					Drivetrain.zeroGyro();
-					
 					Drivetrain.setTurnToTarget(Constants.CenterTurnToSwitchSpeed,
 							                    Constants.CenterTurnToSwitchAngle);
 					
@@ -108,8 +122,8 @@ public class AutoRoutine {
 	private void stateActionCenterTurnToTarget(){
 		if(!Drivetrain.isTurning){
 			if(selectedAutonRoutine == CENTER_SWITCH){
-				setAutonDelay(500);
-				currentAutonState = DELAY_1;
+				setAutonDelay(0.5);
+				currentAutonState = CENTER_SWITCH_DELAY_1;
 			}
 			else{
 				//currentAutonState = STOP;
@@ -120,20 +134,56 @@ public class AutoRoutine {
 		}
 	}
 	
-	private void stateActionDelay1(){
-		if(autonDelayCount <= 20)
+	private void stateActionCenSwDelay1(){
+		if(timer.get()>= alarmTime)
 		{
 			autonDelayCount = 0;
 			Drivetrain.zeroGyro();
-			Drivetrain.setMoveDistance(0.0, 72.0, 0.0, 0.5);
-			currentAutonState = MOVE_Y_DISTANCE;
+			Drivetrain.setMoveDistance(110.0, 0.5);
+			currentAutonState = MOVE_Y_DISTANCE_FWD;
 		}
 		else{
-			autonDelayCount = autonDelayCount - 20;
+			//Wait for the timer to expire
+		}
+	}
+	
+	private void stateActionCenSwDelay2(){
+		if(timer.get()>= alarmTime)
+		{
+			Intake.setIntakeSpeed(1.0);
+			setAutonDelay(1);
+			currentAutonState = CENTER_SWITCH_DELAY_3;
+		}
+		else{
+			//Wait for the timer to expire
+		}
+	}
+	
+	private void stateActionCenSwDelay3(){
+		if(timer.get()>= alarmTime)
+		{
+			Intake.setIntakeSpeed(0.0);
+			Drivetrain.setMoveDistance(-100, -0.5);
+			currentAutonState = BACKUP;
+		}
+		else{
+			//Wait for the timer to expire
 		}
 	}
 	
 	private void stateActionMoveYDistance(){
+		if(!Drivetrain.isMovingYDistance){
+			Intake.setIntakeSolenoid(true);
+			setAutonDelay(1);
+			currentAutonState = CENTER_SWITCH_DELAY_2;
+		}
+		else
+		{
+			//Do nothing and wait for move to complete
+		}
+	}
+	
+	private void stateActionBackup(){
 		if(!Drivetrain.isMovingYDistance){
 			currentAutonState = STOP;
 		}
@@ -144,10 +194,10 @@ public class AutoRoutine {
 	}
 	
 	private void stateActionStop(){
-		Drivetrain.setMoveDistance(0.0, 0.0, 0.0, 0.0);
+		//Drivetrain.setMoveDistance(0.0, 0.0);
 	}
 	
-	private void setAutonDelay(int delay){
-		autonDelayCount = delay;
+	private void setAutonDelay(double delay){
+		alarmTime = timer.get() + delay;
 	}
 }

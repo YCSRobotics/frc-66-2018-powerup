@@ -124,7 +124,6 @@ public class Drivetrain {
 		}
 			
 	}
-	
 	public void updateDrivetrainAuton(){
 		double y_distance_error;
 		double x_distance_error;
@@ -340,15 +339,11 @@ public class Drivetrain {
 		
 	}
 	
-	public static void setMoveDistance(double xDistance, double yDistance, double xThrottle, double yThrottle){
+	public static void setMoveDistance(double yDistance, double yThrottle){
 		
 		sensors.resetEncoder();
 		
-		double currentYDistance = sensors.getMainAvgDistance();
-		double currentXDistance = getTopSlideDistance();
-		
-		yTargetDistance = currentYDistance + yDistance;
-		xTargetDistance = currentXDistance + xDistance;
+		yTargetDistance = yDistance;
 		
 		if(Math.abs(yDistance) > Constants.TargetDistanceThreshold)
 		{
@@ -359,17 +354,6 @@ public class Drivetrain {
     	{
     		isMovingYDistance = false;
     		targetYThrottle = 0.0;
-    	}
-		
-		if(Math.abs(xDistance) > Constants.TargetDistanceThreshold)
-		{
-			isMovingXDistance = true;
-			targetXThrottle = xThrottle;
-		}
-		else
-    	{
-    		isMovingXDistance = false;
-			targetXThrottle = 0.0;
     	}
 	}
 	
