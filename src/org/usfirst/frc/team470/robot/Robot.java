@@ -20,8 +20,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * project.
  */
 public class Robot extends TimedRobot {
-	private static final String kDefaultAuto = "Default";
-	private static final String kCenterAuto = "Center - Switch";
+	private static final String kDefaultAuto    = "Default";
+	private static final String kCenterAuto     = "Center - Switch";
+	private static final String kLeftSwitchAuto = "Left - Switch Priority";
+	private static final String kLeftScaleAuto  = "Left - Scale Priority";
+	private static final String kRightSwitchAuto = "Right - Switch Priority";
+	private static final String kRightScaleAuto  = "Right - Scale Priority";
 	
 	private String m_autoSelected;
 	private SendableChooser<String> m_chooser = new SendableChooser<>();
@@ -41,6 +45,10 @@ public class Robot extends TimedRobot {
 	public void robotInit() {
 		m_chooser.addDefault("Default Auto", kDefaultAuto);
 		m_chooser.addObject("Center - Switch", kCenterAuto);
+		m_chooser.addObject("Left - Switch Priority", kLeftSwitchAuto);
+		m_chooser.addObject("Left - Scale Priority", kLeftScaleAuto);
+		m_chooser.addObject("Right - Switch Priority", kRightSwitchAuto);
+		m_chooser.addObject("Right - Scale Priority", kRightScaleAuto);
 		
 		SmartDashboard.putData("Auto choices", m_chooser);
 		
@@ -77,6 +85,22 @@ public class Robot extends TimedRobot {
 		case kCenterAuto:
 			// Put custom auto code here
 			autonomous.setSelectedAutonRoutine(AutoRoutine.CENTER_SWITCH);
+			break;
+		case kLeftSwitchAuto:
+			// Put custom auto code here
+			autonomous.setSelectedAutonRoutine(AutoRoutine.LEFT_START_SWITCH);
+			break;
+		case kLeftScaleAuto:
+			// Put custom auto code here
+			autonomous.setSelectedAutonRoutine(AutoRoutine.LEFT_START_SCALE);
+			break;
+		case kRightSwitchAuto:
+			// Put custom auto code here
+			autonomous.setSelectedAutonRoutine(AutoRoutine.RIGHT_START_SWITCH);
+			break;
+		case kRightScaleAuto:
+			// Put custom auto code here
+			autonomous.setSelectedAutonRoutine(AutoRoutine.RIGHT_START_SCALE);
 			break;
 		case kDefaultAuto:
 		default:

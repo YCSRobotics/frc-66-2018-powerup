@@ -3,6 +3,7 @@ package org.usfirst.frc.team470.robot;
 import org.usfirst.frc.team470.robot.Constants;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
@@ -345,6 +346,8 @@ public class Drivetrain {
 		
 		yTargetDistance = yDistance;
 		
+		enableDrivetrainDynamicBraking(true);
+		
 		if(Math.abs(yDistance) > Constants.TargetDistanceThreshold)
 		{
     		isMovingYDistance = true;
@@ -363,4 +366,19 @@ public class Drivetrain {
 		targetTurn = turn;//Turn power
 	}
 	
+	public static void enableDrivetrainDynamicBraking(boolean enable){
+		if(enable){
+			leftMasterMotor.setNeutralMode(NeutralMode.Brake);
+			leftSlaveMotor.setNeutralMode(NeutralMode.Brake);
+			rightMasterMotor.setNeutralMode(NeutralMode.Brake);
+			rightSlaveMotor.setNeutralMode(NeutralMode.Brake);
+		}
+		else{
+			leftMasterMotor.setNeutralMode(NeutralMode.Coast);
+			leftSlaveMotor.setNeutralMode(NeutralMode.Coast);
+			rightMasterMotor.setNeutralMode(NeutralMode.Coast);
+			rightSlaveMotor.setNeutralMode(NeutralMode.Coast);
+		}
+		
+	}
 }
