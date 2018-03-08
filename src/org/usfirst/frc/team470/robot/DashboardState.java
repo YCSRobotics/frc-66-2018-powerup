@@ -26,6 +26,17 @@ public class DashboardState {
 		SmartDashboard.putBoolean("Lower Limit Active", Elevator.isLowerLimitPressed());
 		SmartDashboard.putBoolean("Forward Limit Active", Elevator.isUpperLimitPressed());
 		
+		SmartDashboard.putNumber("Selected Auton", AutoRoutine.selectedAutonRoutine);
+		SmartDashboard.putNumber("Current Auton State", AutoRoutine.currentAutonState);
+		
+		SmartDashboard.putNumber("Turn Command", Drivetrain.targetTurn);
+		SmartDashboard.putNumber("Turn Angle", Drivetrain.targetAngle);
+		SmartDashboard.putBoolean("Turn Angle", Drivetrain.isTurning);
+		
+		SmartDashboard.putNumber("Y Target Throttle", Drivetrain.targetYThrottle);
+		SmartDashboard.putNumber("Y Target Distance", Drivetrain.yTargetDistance);
+		SmartDashboard.putBoolean("Is Moving Y Distance", Drivetrain.isMovingYDistance);
+		
 	}
 	
 }

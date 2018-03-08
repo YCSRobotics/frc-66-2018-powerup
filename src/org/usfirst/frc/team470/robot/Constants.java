@@ -122,5 +122,9 @@ public class Constants {
 	
 	//Auton Constants
 	public static final double TargetDistanceThreshold = 6.0;
+	public static final double CenterTurnToSwitchSpeed = 0.5;
+	public static final double CenterTurnToSwitchAngle = 15.0;
+	public static final double SideTurnToSwitchAngle = 90.0;
+
 	
 }

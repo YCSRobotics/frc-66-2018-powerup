@@ -3,6 +3,7 @@ package org.usfirst.frc.team470.robot;
 import org.usfirst.frc.team470.robot.Constants;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
@@ -38,15 +39,15 @@ public class Drivetrain {
 	private double driveGain = 1.0;
 	private boolean isInverted = false;
 	
-	private static double targetYThrottle = 0.0;//Fwd/Rwd Throttle
-	private static double targetXThrottle = 0.0;//Left/Right Throttle
-	private static double targetTurn = 0.0;
+	public static double targetYThrottle = 0.0;//Fwd/Rwd Throttle
+	public static double targetXThrottle = 0.0;//Left/Right Throttle
+	public static double targetTurn = 0.0;
 	
 	private static double finesse = 1.0;
 	
-	private static double yTargetDistance = 0.0;
-	private static double xTargetDistance = 0.0;
-	private static double targetAngle = 0.0;
+	public static double yTargetDistance = 0.0;
+	public static double xTargetDistance = 0.0;
+	public static double targetAngle = 0.0;
 	
 	public static boolean isMovingYDistance = false;
 	public static boolean isMovingXDistance = false;
@@ -124,7 +125,6 @@ public class Drivetrain {
 		}
 			
 	}
-	
 	public void updateDrivetrainAuton(){
 		double y_distance_error;
 		double x_distance_error;
@@ -172,7 +172,8 @@ public class Drivetrain {
 		
 		setTargetSpeeds(targetYThrottle, targetXThrottle, targetTurn);
 		
-		
+		leftMasterMotor.set(ControlMode.PercentOutput, (Constants.LeftDriveReversed ? -1:1) * leftMotorCommand * driveGain);
+		rightMasterMotor.set(ControlMode.PercentOutput, (Constants.RightDriveReversed ? -1:1) * rightMotorCommand * driveGain);
 	}
 	
 	//compute turn gain
@@ -309,6 +310,7 @@ public class Drivetrain {
 		isGyroZeroed = true;
 		
 	}
+
 	
 	//Finese Mode, Slows Drivetrain down.
 	private void getFinesseInput() {
@@ -338,15 +340,13 @@ public class Drivetrain {
 		
 	}
 	
-	public static void setMoveDistance(double xDistance, double yDistance, double xThrottle, double yThrottle){
+	public static void setMoveDistance(double yDistance, double yThrottle){
 		
 		sensors.resetEncoder();
 		
-		double currentYDistance = sensors.getMainAvgDistance();
-		double currentXDistance = getTopSlideDistance();
+		yTargetDistance = yDistance;
 		
-		yTargetDistance = currentYDistance + yDistance;
-		xTargetDistance = currentXDistance + xDistance;
+		enableDrivetrainDynamicBraking(true);
 		
 		if(Math.abs(yDistance) > Constants.TargetDistanceThreshold)
 		{
@@ -358,17 +358,27 @@ public class Drivetrain {
     		isMovingYDistance = false;
     		targetYThrottle = 0.0;
     	}
-		
-		if(Math.abs(xDistance) > Constants.TargetDistanceThreshold)
-		{
-			isMovingXDistance = true;
-			targetXThrottle = xThrottle;
-		}
-		else
-    	{
-    		isMovingXDistance = false;
-			targetXThrottle = 0.0;
-    	}
 	}
 	
+	public static void setTurnToTarget(double turn, double angle){
+		isTurning = true;
+		targetAngle = Math.abs(angle);//angle must always be positive 
+		targetTurn = turn;//Turn power
+	}
+	
+	public static void enableDrivetrainDynamicBraking(boolean enable){
+		if(enable){
+			leftMasterMotor.setNeutralMode(NeutralMode.Brake);
+			leftSlaveMotor.setNeutralMode(NeutralMode.Brake);
+			rightMasterMotor.setNeutralMode(NeutralMode.Brake);
+			rightSlaveMotor.setNeutralMode(NeutralMode.Brake);
+		}
+		else{
+			leftMasterMotor.setNeutralMode(NeutralMode.Coast);
+			leftSlaveMotor.setNeutralMode(NeutralMode.Coast);
+			rightMasterMotor.setNeutralMode(NeutralMode.Coast);
+			rightSlaveMotor.setNeutralMode(NeutralMode.Coast);
+		}
+		
+	}
 }
