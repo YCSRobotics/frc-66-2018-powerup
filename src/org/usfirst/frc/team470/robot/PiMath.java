@@ -12,7 +12,7 @@ public class PiMath {
 		
 	}
 	
-	public static double getTargetDistance() {
+	public static double getCubeDistance() {
 		
 		double distance;
 		double radians = Math.toRadians(getImageSizeInDeg());
@@ -23,8 +23,7 @@ public class PiMath {
 	}
 	
 	public static double angleToCube(String target) {
-		
-		
+				
 		double degAngle = ((SmartDashboard.getNumber("CubeCenterOfTarget", 0) - 
 				(Constants.CAMERA_WIDTH/2)) * Constants.DEG_PER_PIXEL);
 		
