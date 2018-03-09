@@ -19,6 +19,12 @@ public class Intake {
 	private boolean isButtonPressed = false;
 	private boolean isOpenCloseButtonPressed = false;
 	
+	public void intakeInit() {
+		
+		intakeOpenCloseSolenoid.set(true);
+		
+	}
+	
 	public void updateIntake() {
 		
 		determineIntakeRaiseLowerButtonStatus();
@@ -49,7 +55,7 @@ public class Intake {
 	
 	private void determineIntakeRaiseLowerButtonStatus(){
 		
-		if((OperatorController.getRawButton(Constants.RightBumper)) && (!isOpenCloseButtonPressed)) {
+		if((OperatorController.getRawButton(Constants.LeftBumper)) && (!isOpenCloseButtonPressed)) {
 					
 			isOpenCloseButtonPressed = true;
 					
@@ -63,7 +69,7 @@ public class Intake {
 				
 			}
 		    
-		} else if (!OperatorController.getRawButton(Constants.RightBumper)){
+		} else if (!OperatorController.getRawButton(Constants.LeftBumper)){
 			
 			isOpenCloseButtonPressed = false;
 			
@@ -75,7 +81,7 @@ public class Intake {
 	
 	private void determineIntakeOpenCloseButtonStatus(){
 		
-		if((OperatorController.getRawButton(Constants.LeftBumper)) && (!isButtonPressed)) {
+		if((OperatorController.getRawButton(Constants.RightBumper)) && (!isButtonPressed)) {
 					
 			isButtonPressed = true;
 					
@@ -89,7 +95,7 @@ public class Intake {
 				
 			}
 		    
-		} else if (!OperatorController.getRawButton(Constants.LeftBumper)){
+		} else if (!OperatorController.getRawButton(Constants.RightBumper)){
 			
 			isButtonPressed = false;
 			
@@ -104,12 +110,12 @@ public class Intake {
 		double z;
 		z = OperatorController.getRawAxis(Constants.RightJoyY);
 		
-		return (Math.abs(z) > Constants.DeadZoneLimit ? -(z) : 0.0);
+		return (Math.abs(z) > Constants.DeadZoneLimit ? -(z) : -0.15);
 		
 	}
 	
 	public static void setIntakeSpeed(double speed){
-		leftIntakeMotor.set(speed);
+		leftIntakeMotor.set(speed+0.05);
 		rightIntakeMotor.set(-speed);
 	}
 	

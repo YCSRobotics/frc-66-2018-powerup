@@ -74,6 +74,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void autonomousInit() {
 		m_autoSelected = m_chooser.getSelected();
+		//intake.intakeInit();
 		//m_autoSelected = kCenterAuto;
 		
 		autonomous.setFmsPlateAssignment(DriverStation.getInstance().getGameSpecificMessage());
@@ -124,6 +125,7 @@ public class Robot extends TimedRobot {
 
 	public void teleopInit(){
 		//elevator.zeroElevatorPosition();
+		//intake.intakeInit();
 	}
 	/**
 	 * This function is called periodically during operator control.

@@ -27,7 +27,7 @@ public class Elevator {
 	
 	public Elevator(){
 		//Ramping Lift
-		elevatorMotor.configOpenloopRamp(0.0, 10);
+		elevatorMotor.configOpenloopRamp(0.15, 10);
 		
 		//Configure Feedback device - arg0 Feedback type, arg1 PID loop, arg2 Timeout in mS
 		elevatorMotor.setSensorPhase(true);
