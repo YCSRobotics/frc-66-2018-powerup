@@ -10,15 +10,19 @@ public class Intake {
 	private static Talon rightIntakeMotor = Constants.IntakeRightMotor;
 	
 	private static Solenoid intakeSolenoid = Constants.IntakeSolenoid;
+	private static Solenoid intakeOpenCloseSolenoid = Constants.IntakeSolenoidOpenClose;
 	
 	Joystick OperatorController = new Joystick(Constants.OperatorController);
 	
 	private static boolean isIntakeSolenoidActive = false;
+	private static boolean isIntakeSolenoidOpenCloseActive = false;
 	private boolean isButtonPressed = false;
+	private boolean isOpenCloseButtonPressed = false;
 	
 	public void updateIntake() {
 		
 		determineIntakeRaiseLowerButtonStatus();
+		determineIntakeOpenCloseButtonStatus();
 		
 		if (!isIntakeSolenoidActive) {
 			
@@ -30,31 +34,24 @@ public class Intake {
 			
 		}
 		
-		//Control intake motors
-		/*if(OperatorController.getRawButton(Constants.ButtonA)){
+		if (!isIntakeSolenoidOpenCloseActive) {
 			
-			leftIntakeMotor.set(1.0);
-			rightIntakeMotor.set(-1.0);
+			intakeOpenCloseSolenoid.set(false);
 			
-		}else if(OperatorController.getRawButton(Constants.ButtonB)){
+		} else {
 			
-			leftIntakeMotor.set(-1.0);
-			rightIntakeMotor.set(1.0);
+			intakeOpenCloseSolenoid.set(true);
 			
-		}else{
-			
-			leftIntakeMotor.set(0.0);
-			rightIntakeMotor.set(0.0);
-		}*/
+		}
 		
 		setIntakeSpeed(getIntakeInput());	
 	}
 	
 	private void determineIntakeRaiseLowerButtonStatus(){
 		
-		if((OperatorController.getRawButton(Constants.RightBumper)) && (!isButtonPressed)) {
+		if((OperatorController.getRawButton(Constants.RightBumper)) && (!isOpenCloseButtonPressed)) {
 					
-			isButtonPressed = true;
+			isOpenCloseButtonPressed = true;
 					
 		    if(isIntakeSolenoidActive) {
 		    	
@@ -67,6 +64,32 @@ public class Intake {
 			}
 		    
 		} else if (!OperatorController.getRawButton(Constants.RightBumper)){
+			
+			isOpenCloseButtonPressed = false;
+			
+		} else {
+			//Do nothing, button is still pressed
+		}
+		
+	}
+	
+	private void determineIntakeOpenCloseButtonStatus(){
+		
+		if((OperatorController.getRawButton(Constants.LeftBumper)) && (!isButtonPressed)) {
+					
+			isButtonPressed = true;
+					
+		    if(isIntakeSolenoidOpenCloseActive) {
+		    	
+		    	isIntakeSolenoidOpenCloseActive = false;
+		    	
+			} else {
+				
+				isIntakeSolenoidOpenCloseActive = true;
+				
+			}
+		    
+		} else if (!OperatorController.getRawButton(Constants.LeftBumper)){
 			
 			isButtonPressed = false;
 			

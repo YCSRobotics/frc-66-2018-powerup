@@ -25,9 +25,10 @@ public class Constants {
 	public static final Talon IntakeRightMotor = new Talon(1);
 	
 	public static final Solenoid IntakeSolenoid = new Solenoid(0);
+	public static final Solenoid IntakeSolenoidOpenClose = new Solenoid(1);
 	
 	public static final boolean EnableDriveBrake = false;
-	public static final double DeadZoneLimit = 0.3;
+	public static final double DeadZoneLimit = 0.18;
 	public static final double SlideDeadZoneLimit = 0.35;
 	
 	//Gains
@@ -48,8 +49,8 @@ public class Constants {
 	public static final boolean RampEnabled = true;
 	
 	//This is the time to ramp from 0V to +/-12V in sec
-	public static final double DriveRampTime = 0.25; 
-	public static final double DriveRampRate = 0.5;
+	public static final double DriveRampTime = 0.2; 
+	public static final double DriveRampRate = 0.25;
 	public static final double SlideRampRate = 1.0;
 	
 	public static final double SlidePowerLimit = 0.5;
