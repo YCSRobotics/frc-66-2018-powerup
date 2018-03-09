@@ -115,11 +115,12 @@ public class Constants {
 	public static final double DEG_PER_PIXEL = FIELD_OF_VIEW/CAMERA_WIDTH;
 	
 	//Elevator Positions
-	public static final double LowCarryPosition  = 5000;//estimated 3"
-	public static final double SwitchPosition    = 10000;//estimated 12"
-	public static final double LowScalePosition  = 20000;//estimated 48"
-	public static final double MidScalePosition  = 30000;//estimated 56"
-	public static final double HighScalePosition = 40000;//estimated 72"
+	public static final double ElevatorPosCtrlThreshold = 1000;
+	public static final double LowCarryPosition  		= 5000;//estimated 3"
+	public static final double SwitchPosition    	    = 10000;//estimated 12"
+	public static final double LowScalePosition  		= 20000;//estimated 48"
+	public static final double MidScalePosition  		= 30000;//estimated 56"
+	public static final double HighScalePosition 		= 40000;//estimated 72"
 	
 	//Auton Constants
 	public static final double TargetDistanceThreshold = 6.0;

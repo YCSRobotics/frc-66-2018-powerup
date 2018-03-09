@@ -75,8 +75,11 @@ public class Elevator {
 			isPositionControl = false;
 			elevatorMotor.set(ControlMode.PercentOutput, getElevatorInput());
 		}
-		else if (!isElevatorZeroed) { 
-			//Joystick released but relative position is unknown, so can't move to relative position
+		else if ((!isElevatorZeroed)||
+				 ((elevatorPosition < Constants.ElevatorPosCtrlThreshold)&&
+				  (commandedPosition < Constants.ElevatorPosCtrlThreshold))){ 
+			/*Joystick released but relative position is unknown or close to lower limit 
+			  so can't move or hold relative position*/
 			isManualControl = true;
 			isPositionControl = false; 
 			elevatorMotor.set(ControlMode.PercentOutput, 0.0);
