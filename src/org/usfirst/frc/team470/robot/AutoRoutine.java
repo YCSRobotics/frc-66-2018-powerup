@@ -134,7 +134,27 @@ public class AutoRoutine {
 					currentAutonState = MOVE_Y_DISTANCE_FWD;
 				}else if(fms_plate_assignment.charAt(1) == 'L'){
 					//Left scale is ours - RLR
-					Drivetrain.setMoveDistance(250.0, 0.75);
+					Drivetrain.setMoveDistance(262.0, 0.75);
+					currentAutonState = MOVE_Y_DISTANCE_FWD;
+				}else if(fms_plate_assignment.charAt(1) == 'R'){
+					//Right switch and scale are ours "RRR"
+					//For now, just cross autonomous line
+					Drivetrain.setMoveDistance(80.0, 0.5);
+					currentAutonState = MOVE_Y_DISTANCE_FWD;
+				}else{
+					//Not a valid plate assignment
+					currentAutonState = STOP;
+				}		
+			}
+			else if(selectedAutonRoutine == LEFT_START_SCALE)
+			{
+				if(fms_plate_assignment.charAt(1) == 'L'){
+					//Left scale is ours - RLR or LLL
+					Drivetrain.setMoveDistance(262.0, 0.75);
+					currentAutonState = MOVE_Y_DISTANCE_FWD;
+				}else if(fms_plate_assignment.charAt(0) == 'L'){
+					//Left switch is ours - LRL
+					Drivetrain.setMoveDistance(130.0, 0.5);
 					currentAutonState = MOVE_Y_DISTANCE_FWD;
 				}else if(fms_plate_assignment.charAt(1) == 'R'){
 					//Right switch and scale are ours "RRR"
@@ -154,7 +174,27 @@ public class AutoRoutine {
 					currentAutonState = MOVE_Y_DISTANCE_FWD;
 				}else if(fms_plate_assignment.charAt(1) == 'R'){
 					//Right scale is ours - LRL
-					Drivetrain.setMoveDistance(250.0, 0.75);
+					Drivetrain.setMoveDistance(262.0, 0.75);
+					currentAutonState = MOVE_Y_DISTANCE_FWD;
+				}else if(fms_plate_assignment.charAt(1) == 'L'){
+					//Left switch and scale are ours - LLL
+					//For now, just cross autonomous line
+					Drivetrain.setMoveDistance(80.0, 0.5);
+					currentAutonState = MOVE_Y_DISTANCE_FWD;
+				}else{
+					//Not a valid plate assignment
+					currentAutonState = STOP;
+				}		
+			}
+			else if(selectedAutonRoutine == RIGHT_START_SCALE)
+			{
+				if(fms_plate_assignment.charAt(1) == 'R'){
+					//Right scale is ours - LRL or RRR
+					Drivetrain.setMoveDistance(262.0, 0.75);
+					currentAutonState = MOVE_Y_DISTANCE_FWD;
+				}else if(fms_plate_assignment.charAt(0) == 'R'){
+					//Right switch is ours - RLR
+					Drivetrain.setMoveDistance(130.0, 0.5);
 					currentAutonState = MOVE_Y_DISTANCE_FWD;
 				}else if(fms_plate_assignment.charAt(1) == 'L'){
 					//Left switch and scale are ours - LLL
@@ -258,6 +298,35 @@ public class AutoRoutine {
 				}
 				
 			}
+			else if (selectedAutonRoutine == LEFT_START_SCALE)
+			{
+				if(fms_plate_assignment.charAt(1) == 'L')
+				{
+					//RLR or LLL
+					Elevator.goToPosition(Constants.HighScalePosition);
+					setAutonDelay(1);
+					currentAutonState = LEFT_RIGHT_DELAY_BEFORE_TURN;
+				}if(fms_plate_assignment.charAt(0) == 'L')
+				{
+					//LRL
+					Elevator.goToPosition(Constants.SwitchPosition);
+					setAutonDelay(1);
+					currentAutonState = LEFT_RIGHT_DELAY_BEFORE_TURN;
+				}
+				else if(fms_plate_assignment.charAt(1) == 'L')
+				{
+					//RLR
+					Elevator.goToPosition(Constants.HighScalePosition);
+					setAutonDelay(1);
+					currentAutonState = LEFT_RIGHT_DELAY_BEFORE_TURN;
+				}
+				else
+				{
+					//RRR
+					currentAutonState = STOP;
+				}
+				
+			}
 			else if (selectedAutonRoutine == RIGHT_START_SWITCH)
 			{
 				if(fms_plate_assignment.charAt(0) == 'R')
@@ -271,6 +340,29 @@ public class AutoRoutine {
 				{
 					//LRL
 					Elevator.goToPosition(Constants.HighScalePosition);
+					setAutonDelay(1);
+					currentAutonState = LEFT_RIGHT_DELAY_BEFORE_TURN;
+				}
+				else
+				{
+					//LLL
+					currentAutonState = STOP;
+				}
+				
+			}
+			else if (selectedAutonRoutine == RIGHT_START_SCALE)
+			{
+				if(fms_plate_assignment.charAt(1) == 'R')
+				{
+					//LRL or RRR
+					Elevator.goToPosition(Constants.HighScalePosition);
+					setAutonDelay(1);
+					currentAutonState = LEFT_RIGHT_DELAY_BEFORE_TURN;
+				}
+				else if(fms_plate_assignment.charAt(0) == 'R')
+				{
+					//RLR
+					Elevator.goToPosition(Constants.SwitchPosition);
 					setAutonDelay(1);
 					currentAutonState = LEFT_RIGHT_DELAY_BEFORE_TURN;
 				}
@@ -307,13 +399,13 @@ public class AutoRoutine {
 			if((selectedAutonRoutine == LEFT_START_SWITCH) ||
 			   (selectedAutonRoutine == LEFT_START_SCALE)){
 				Drivetrain.zeroGyro();
-				Drivetrain.setTurnToTarget(0.5, 45);
+				Drivetrain.setTurnToTarget(0.5, 65);
 				currentAutonState = LEFT_RIGHT_TURN_1;
 			}
 			else if((selectedAutonRoutine == RIGHT_START_SWITCH) ||
 					(selectedAutonRoutine == RIGHT_START_SCALE)){
 				Drivetrain.zeroGyro();
-				Drivetrain.setTurnToTarget(-0.5, 45);
+				Drivetrain.setTurnToTarget(-0.5, 65);
 				currentAutonState = LEFT_RIGHT_TURN_1;
 			}else{
 				
@@ -337,7 +429,7 @@ public class AutoRoutine {
 	private void stateActionLftRtDelayAfterTurn(){
 		if(timer.get()>= alarmTime){
 			Drivetrain.zeroGyro();
-			Drivetrain.setMoveDistance(12, 0.25);
+			Drivetrain.setMoveDistance(18, 0.3);
 			currentAutonState = CREEP_FWD; 
 		}
 	}

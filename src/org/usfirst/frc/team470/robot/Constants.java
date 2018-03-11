@@ -17,8 +17,8 @@ public class Constants {
 	public static final TalonSRX LeftSlaveMotor = new TalonSRX(1);
 	public static final TalonSRX RightMasterMotor = new TalonSRX(2);
 	public static final TalonSRX RightSlaveMotor = new TalonSRX(3);
-	public static final TalonSRX SlideBottomMotor = new TalonSRX(4);
-	public static final TalonSRX SlideTopMotor = new TalonSRX(5);
+	public static final TalonSRX LeftLiftMotor = new TalonSRX(4);
+	public static final TalonSRX RightLiftMotor = new TalonSRX(5);
 	public static final TalonSRX ElevatorMotor = new TalonSRX(6);
 
 	public static final Talon IntakeLeftMotor = new Talon(0);
@@ -26,6 +26,9 @@ public class Constants {
 	
 	public static final Solenoid IntakeSolenoid = new Solenoid(0);
 	public static final Solenoid IntakeSolenoidOpenClose = new Solenoid(1);
+	
+	public static final Solenoid LeftLiftReleaseSolenoid = new Solenoid(2);
+	public static final Solenoid RightLiftReleaseSolenoid = new Solenoid(3);
 	
 	public static final boolean EnableDriveBrake = false;
 	public static final double DeadZoneLimit = 0.18;
@@ -42,7 +45,7 @@ public class Constants {
 	public static final boolean RightDriveReversed  = true;
 	
 	//Slows drivetrain down to specified power
-	public static final double Finesse = 0.3;
+	public static final double Finesse = 0.5;
 	
 	//This is the min ramp rate per CTRE documentation
 	public static final double MinTalonRampRate = 1.173; 
@@ -108,6 +111,12 @@ public class Constants {
 	public static final int RightBumper = 6;
 	public static final int SelectButton = 7;
 	public static final int Startbutton = 8;
+	
+	public static final int DPAD_UP = 0;
+	public static final int DPAD_LEFT = 90;
+	public static final int DPAD_RIGHT = 270;
+	
+	public static final double TriggerActiveThreshold = 0.5;
 	
 	//Vision Constants
 	public static final double CAMERA_WIDTH = 640;

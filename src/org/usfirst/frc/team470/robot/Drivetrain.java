@@ -22,8 +22,8 @@ public class Drivetrain {
 	private static TalonSRX leftSlaveMotor = Constants.LeftSlaveMotor;
 	private static TalonSRX rightMasterMotor = Constants.RightMasterMotor;
 	private static TalonSRX rightSlaveMotor = Constants.RightSlaveMotor;
-	private static TalonSRX topSlideMotor = Constants.SlideTopMotor;
-	private static TalonSRX bottomSlideMotor = Constants.SlideBottomMotor;
+	//private static TalonSRX topSlideMotor = Constants.SlideTopMotor;
+	//private static TalonSRX bottomSlideMotor = Constants.SlideBottomMotor;
 	
 	//Motor Variables
 	private double leftMotorCommand = 0.0;
@@ -67,8 +67,8 @@ public class Drivetrain {
 		rightSlaveMotor.set(ControlMode.Follower, rightMasterMotor.getDeviceID());
 		
 		//Ramping slide
-		bottomSlideMotor.configOpenloopRamp(Constants.SlideRampRate, 5);
-		topSlideMotor.configOpenloopRamp(Constants.SlideRampRate, 5);
+		//bottomSlideMotor.configOpenloopRamp(Constants.SlideRampRate, 5);
+		//topSlideMotor.configOpenloopRamp(Constants.SlideRampRate, 5);
 		
 		//Calibrate Gyro
 		gyro.calibrate();
@@ -113,8 +113,8 @@ public class Drivetrain {
 			rightMasterMotor.set(ControlMode.PercentOutput, (Constants.RightDriveReversed ? -1:1) * rightMotorCommand * driveGain);
 			
 			//update slides
-			bottomSlideMotor.set(ControlMode.PercentOutput, bottomSlideMotorCommand);
-			topSlideMotor.set(ControlMode.PercentOutput, -topSlideMotorCommand);
+			//bottomSlideMotor.set(ControlMode.PercentOutput, bottomSlideMotorCommand);
+			//topSlideMotor.set(ControlMode.PercentOutput, -topSlideMotorCommand);
 
 			
 		} else {
@@ -133,7 +133,7 @@ public class Drivetrain {
 		   (isMovingXDistance)){
 			//Move distance without tracking vision target
 			y_distance_error = yTargetDistance - sensors.getMainAvgDistance();
-			x_distance_error = xTargetDistance - getTopSlideDistance();
+			//x_distance_error = xTargetDistance - getTopSlideDistance();
 			
 			if(Math.abs(y_distance_error) <= Constants.TargetDistanceThreshold){
 				//Robot has reached target
@@ -141,11 +141,11 @@ public class Drivetrain {
 				isMovingYDistance = false;
 			}
 		
-			if(Math.abs(x_distance_error) <= Constants.TargetDistanceThreshold){
+			/*if(Math.abs(x_distance_error) <= Constants.TargetDistanceThreshold){
 				//Robot has reached target
 				targetXThrottle = 0.0;
 				isMovingXDistance = false;
-			}
+			}*/
 
 			targetTurn = -1*(gyro.getAngle()*Constants.GyroGain);
 		}
@@ -315,7 +315,7 @@ public class Drivetrain {
 	//Finese Mode, Slows Drivetrain down.
 	private void getFinesseInput() {
 		
-		if (DriveController.getRawButton(Constants.RightBumper)) {
+		if (!DriveController.getRawButton(Constants.RightBumper)) {
 				
 			finesse = Constants.Finesse;
 				
@@ -326,7 +326,7 @@ public class Drivetrain {
 	}
 	
 	//gets the bottom and top slide distance. 
-	public static double getBottomSlideDistance() {
+	/*public static double getBottomSlideDistance() {
 		
 		return bottomSlideMotor.getSelectedSensorPosition(0) * Constants.SlideEncoderInchPerRotation;
 	
@@ -338,7 +338,7 @@ public class Drivetrain {
 		return topSlideMotor.getSelectedSensorPosition(0) * 
 				Constants.SlideEncoderInchPerRotation;
 		
-	}
+	}*/
 	
 	public static void setMoveDistance(double yDistance, double yThrottle){
 		

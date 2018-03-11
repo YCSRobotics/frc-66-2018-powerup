@@ -35,6 +35,7 @@ public class Robot extends TimedRobot {
 	Elevator elevator = new Elevator();
 	DashboardState dashboard = new DashboardState();
 	Intake intake = new Intake();
+	Lifts lifts = new Lifts();
 	
 
 	/**
@@ -126,6 +127,7 @@ public class Robot extends TimedRobot {
 	public void teleopInit(){
 		//elevator.zeroElevatorPosition();
 		//intake.intakeInit();
+		Drivetrain.enableDrivetrainDynamicBraking(false);
 	}
 	/**
 	 * This function is called periodically during operator control.
@@ -137,6 +139,7 @@ public class Robot extends TimedRobot {
 		dashboard.updateSmartDashboard();
 		drivetrain.updateDrivetrainTeleop();
 		elevator.updateElevatorTeleop();
+		//lifts.updateLiftsTeleop();
 		
 	}
 
