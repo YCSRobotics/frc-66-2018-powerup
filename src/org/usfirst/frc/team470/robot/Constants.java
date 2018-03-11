@@ -158,7 +158,9 @@ public class Constants {
 	public static final double LeftRightTurnSpeed = 0.5;
 	public static final double LeftRightTurnAngle = 65;
 	
-	public static final double LeftRightCreepDistance = 18;
+	public static final double LeftRightCreepSwitchDist = 18;
+	public static final double LeftRightCreepScaleDist = 18;
+	
 	public static final double LeftRightCreepSpeed    = 0.3;
 
 	
