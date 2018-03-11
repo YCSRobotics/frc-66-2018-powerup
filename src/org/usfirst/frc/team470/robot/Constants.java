@@ -131,11 +131,35 @@ public class Constants {
 	public static final double MidScalePosition  		= 30000;//estimated 56"
 	public static final double HighScalePosition 		= 54000;//estimated 72"
 	
-	//Auton Constants
+	//General Auto Constants
 	public static final double TargetDistanceThreshold = 6.0;
+	
+	//Center Auto Constants
 	public static final double CenterTurnToSwitchSpeed = 0.5;
 	public static final double CenterTurnToSwitchAngle = 15.0;
-	public static final double SideTurnToSwitchAngle = 90.0;
+	
+	public static final double CenterSwitchFwdSpeed    = 0.5;
+	public static final double CenterSwitchFwdDistance = 110;
+	
+	public static final double CenterSwitchRwdSpeed    = -0.5;
+	public static final double CenterSwitchRwdDistance = -100;
+	//public static final double SideTurnToSwitchAngle = 90.0;
+	
+	//Left & Right Auto Constants
+	public static final double LeftRightSwitchDistance = 130.0;
+	public static final double LeftRightSwitchSpeed    = 0.5;
+	
+	public static final double LeftRightScaleDistance  = 262.0;
+	public static final double LeftRightScaleSpeed     = 0.75;
+	
+	public static final double LeftRightAutoLineDistance = 80.0;
+	public static final double LeftRightAutoLineSpeed = 0.5;
+	
+	public static final double LeftRightTurnSpeed = 0.5;
+	public static final double LeftRightTurnAngle = 65;
+	
+	public static final double LeftRightCreepDistance = 18;
+	public static final double LeftRightCreepSpeed    = 0.3;
 
 	
 }
