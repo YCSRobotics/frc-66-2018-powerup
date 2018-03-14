@@ -26,6 +26,8 @@ public class DashboardState {
 		SmartDashboard.putBoolean("Lower Limit Active", Elevator.isLowerLimitPressed());
 		SmartDashboard.putBoolean("Forward Limit Active", Elevator.isUpperLimitPressed());
 		
+		SmartDashboard.putNumber("Distance Sensor Voltage", Intake.distanceVoltage);
+		
 		SmartDashboard.putNumber("Selected Auton", AutoRoutine.selectedAutonRoutine);
 		SmartDashboard.putNumber("Current Auton State", AutoRoutine.currentAutonState);
 		

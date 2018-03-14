@@ -3,6 +3,7 @@ package org.usfirst.frc.team470.robot;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.CounterBase;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Solenoid;
@@ -66,6 +67,7 @@ public class Constants {
 	public static final double PI = 3.1415962;
 	
 	//Sensors
+	public static final AnalogInput DistanceSensor = new AnalogInput(0);
 	public static final ADXRS450_Gyro Gyro = new ADXRS450_Gyro();
 	public static final int LeftUltrasonic = 1;
 	public static final double SuppliedVoltage = 5.0;
@@ -135,6 +137,7 @@ public class Constants {
 	public static final double TargetDistanceThreshold = 6.0;
 	
 	//Center Auto Constants
+	public static final double IntakeCubeDistance      = 1.5;
 	public static final double CenterTurnToSwitchSpeed = 0.5;
 	public static final double CenterTurnToSwitchAngle = 15.0;
 	

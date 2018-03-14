@@ -1,5 +1,6 @@
 package org.usfirst.frc.team470.robot;
 
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Talon;
@@ -12,12 +13,18 @@ public class Intake {
 	private static Solenoid intakeSolenoid = Constants.IntakeSolenoid;
 	private static Solenoid intakeOpenCloseSolenoid = Constants.IntakeSolenoidOpenClose;
 	
+	private static AnalogInput distanceSensor = Constants.DistanceSensor;
+	
+	Joystick DriveController = new Joystick(Constants.DriveController);
 	Joystick OperatorController = new Joystick(Constants.OperatorController);
 	
 	private static boolean isIntakeSolenoidActive = false;
 	private static boolean isIntakeSolenoidOpenCloseActive = false;
 	private boolean isButtonPressed = false;
 	private boolean isOpenCloseButtonPressed = false;
+	private boolean isTriggerPressed = false;
+	private boolean isIntakeOpen = false;
+	public static double distanceVoltage;
 	
 	public void intakeInit() {
 		
@@ -30,27 +37,48 @@ public class Intake {
 		determineIntakeRaiseLowerButtonStatus();
 		determineIntakeOpenCloseButtonStatus();
 		
-		if (!isIntakeSolenoidActive) {
+		distanceVoltage = distanceSensor.getVoltage();
+		
+		if(DriveController.getRawAxis(Constants.RightTrigger) >= Constants.TriggerActiveThreshold){
+			//Driver Controller Auto Load, overrides Operator Controller
+			if(!isTriggerPressed){
+				//Trigger was not pressed before, so open intake
+				isTriggerPressed = true;
+				isIntakeOpen = true;
+				isIntakeSolenoidOpenCloseActive = true;
+				intakeOpenCloseSolenoid.set(true);
+				setIntakeSpeed(1.0);
+			}
+			else if((isIntakeOpen) &&
+					(distanceVoltage > Constants.IntakeCubeDistance)){
+				//Trigger is pressed and cube detected, close intake/grip cube
+				isIntakeOpen = false;
+				intakeOpenCloseSolenoid.set(false);
+			}
+			else{
+				//Intake closed on cube
+			}
+		}
+		else{
+			//Trigger no longer pressed, but don't open the intake automatically
+			isTriggerPressed = false;
 			
+			//Handle Operator control of the grip solenoid
+			if(!isIntakeSolenoidOpenCloseActive){
+				intakeOpenCloseSolenoid.set(false);
+			}else {
+				intakeOpenCloseSolenoid.set(true);
+			}
+			
+			setIntakeSpeed(getIntakeInput());
+		}
+		
+		//Handle Operator control of the Raise/Lower solenoid
+		if (!isIntakeSolenoidActive){
 			intakeSolenoid.set(false);
-			
 		} else {
-			
 			intakeSolenoid.set(true);
-			
 		}
-		
-		if (!isIntakeSolenoidOpenCloseActive) {
-			
-			intakeOpenCloseSolenoid.set(false);
-			
-		} else {
-			
-			intakeOpenCloseSolenoid.set(true);
-			
-		}
-		
-		setIntakeSpeed(getIntakeInput());	
 	}
 	
 	private void determineIntakeRaiseLowerButtonStatus(){
@@ -123,4 +151,5 @@ public class Intake {
 		isIntakeSolenoidActive = command;
 		intakeSolenoid.set(command);
 	}
+	
 }
