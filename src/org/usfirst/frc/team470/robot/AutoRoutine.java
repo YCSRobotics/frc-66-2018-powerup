@@ -142,12 +142,14 @@ public class AutoRoutine {
 				if(fms_plate_assignment.charAt(0) == 'L'){
 					//Left switch is ours - LLL or LRL
 					targetPlate = LEFT_SWITCH;
+					Drivetrain.zeroGyro();
 					Drivetrain.setMoveDistance(Constants.LeftRightSwitchDistance,
 												Constants.LeftRightSwitchSpeed);
 					currentAutonState = MOVE_Y_DISTANCE_FWD;
 				}else if(fms_plate_assignment.charAt(1) == 'L'){
 					//Left scale is ours - RLR
 					targetPlate = LEFT_SCALE;
+					Drivetrain.zeroGyro();
 					Drivetrain.setMoveDistance(Constants.LeftRightScaleDistance, 
 												Constants.LeftRightScaleSpeed);
 					currentAutonState = MOVE_Y_DISTANCE_FWD;
@@ -155,6 +157,7 @@ public class AutoRoutine {
 					//Right switch and scale are ours "RRR"
 					//For now, just cross autonomous line
 					targetPlate = NONE;
+					Drivetrain.zeroGyro();
 					Drivetrain.setMoveDistance(Constants.LeftRightAutoLineDistance, 
 							     				Constants.LeftRightAutoLineSpeed);
 					currentAutonState = MOVE_Y_DISTANCE_FWD;
@@ -168,12 +171,14 @@ public class AutoRoutine {
 				if(fms_plate_assignment.charAt(1) == 'L'){
 					//Left scale is ours - RLR or LLL
 					targetPlate = LEFT_SCALE;
+					Drivetrain.zeroGyro();
 					Drivetrain.setMoveDistance(Constants.LeftRightScaleDistance, 
 												Constants.LeftRightScaleSpeed);
 					currentAutonState = MOVE_Y_DISTANCE_FWD;
 				}else if(fms_plate_assignment.charAt(0) == 'L'){
 					//Left switch is ours - LRL
 					targetPlate = LEFT_SWITCH;
+					Drivetrain.zeroGyro();
 					Drivetrain.setMoveDistance(Constants.LeftRightSwitchDistance,
 												Constants.LeftRightSwitchSpeed);
 					currentAutonState = MOVE_Y_DISTANCE_FWD;
@@ -181,6 +186,7 @@ public class AutoRoutine {
 					//Right switch and scale are ours "RRR"
 					//For now, just cross autonomous line
 					targetPlate = NONE;
+					Drivetrain.zeroGyro();
 					Drivetrain.setMoveDistance(Constants.LeftRightAutoLineDistance, 
 												Constants.LeftRightAutoLineSpeed);
 					currentAutonState = MOVE_Y_DISTANCE_FWD;
@@ -194,12 +200,14 @@ public class AutoRoutine {
 				if(fms_plate_assignment.charAt(0) == 'R'){
 					//Right switch is ours - RRR or RLR
 					targetPlate = RIGHT_SWITCH;
+					Drivetrain.zeroGyro();
 					Drivetrain.setMoveDistance(Constants.LeftRightSwitchDistance, 
 												Constants.LeftRightSwitchSpeed);
 					currentAutonState = MOVE_Y_DISTANCE_FWD;
 				}else if(fms_plate_assignment.charAt(1) == 'R'){
 					//Right scale is ours - LRL
 					targetPlate = RIGHT_SCALE;
+					Drivetrain.zeroGyro();
 					Drivetrain.setMoveDistance(Constants.LeftRightScaleDistance, 
 							 					Constants.LeftRightScaleSpeed);
 					currentAutonState = MOVE_Y_DISTANCE_FWD;
@@ -207,6 +215,7 @@ public class AutoRoutine {
 					//Left switch and scale are ours - LLL
 					//For now, just cross autonomous line
 					targetPlate = NONE;
+					Drivetrain.zeroGyro();
 					Drivetrain.setMoveDistance(Constants.LeftRightAutoLineDistance, 
 							  					Constants.LeftRightAutoLineSpeed);
 					currentAutonState = MOVE_Y_DISTANCE_FWD;
@@ -233,6 +242,7 @@ public class AutoRoutine {
 					//Left switch and scale are ours - LLL
 					//For now, just cross autonomous line
 					targetPlate = NONE;
+					Drivetrain.zeroGyro();
 					Drivetrain.setMoveDistance(Constants.LeftRightAutoLineDistance, 0.5);
 					currentAutonState = MOVE_Y_DISTANCE_FWD;
 				}else{

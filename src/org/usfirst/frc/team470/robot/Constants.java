@@ -18,8 +18,8 @@ public class Constants {
 	public static final TalonSRX LeftSlaveMotor = new TalonSRX(1);
 	public static final TalonSRX RightMasterMotor = new TalonSRX(2);
 	public static final TalonSRX RightSlaveMotor = new TalonSRX(3);
-	public static final TalonSRX LeftLiftMotor = new TalonSRX(4);
-	public static final TalonSRX RightLiftMotor = new TalonSRX(5);
+	public static final TalonSRX SlideTopMotor = new TalonSRX(4);
+	public static final TalonSRX SlideBottomMotor = new TalonSRX(5);
 	public static final TalonSRX ElevatorMotor = new TalonSRX(6);
 
 	public static final Talon IntakeLeftMotor = new Talon(0);
