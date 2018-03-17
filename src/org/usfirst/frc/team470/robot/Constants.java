@@ -55,9 +55,9 @@ public class Constants {
 	//This is the time to ramp from 0V to +/-12V in sec
 	public static final double DriveRampTime = 0.2; 
 	public static final double DriveRampRate = 0.25;
-	public static final double SlideRampRate = 1.0;
+	public static final double SlideRampRate = 0.25;
 	
-	public static final double SlidePowerLimit = 0.5;
+	public static final double SlidePowerLimit = 1.0;
 	
 	//Controllers
 	public static final int DriveController = 0;
@@ -152,14 +152,14 @@ public class Constants {
 	public static final double LeftRightSwitchDistance = 130.0;
 	public static final double LeftRightSwitchSpeed    = 0.5;
 	
-	public static final double LeftRightScaleDistance  = 262.0;
+	public static final double LeftRightScaleDistance  = 270.0;
 	public static final double LeftRightScaleSpeed     = 0.75;
 	
 	public static final double LeftRightAutoLineDistance = 80.0;
 	public static final double LeftRightAutoLineSpeed = 0.5;
 	
 	public static final double LeftRightTurnSpeed = 0.5;
-	public static final double LeftRightTurnAngle = 65;
+	public static final double LeftRightTurnAngle = 50;
 	
 	public static final double LeftRightCreepSwitchDist = 18;
 	public static final double LeftRightCreepScaleDist = 18;

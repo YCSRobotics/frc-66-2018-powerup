@@ -70,7 +70,12 @@ public class Intake {
 				intakeOpenCloseSolenoid.set(true);
 			}
 			
-			setIntakeSpeed(getIntakeInput());
+			if(getIntakeInput() > 0){
+				setIntakeSpeed(getIntakeInput());
+			}
+			else{
+				setIntakeSpeed(getIntakeInput()*0.6);
+			}
 		}
 		
 		//Handle Operator control of the Raise/Lower solenoid
