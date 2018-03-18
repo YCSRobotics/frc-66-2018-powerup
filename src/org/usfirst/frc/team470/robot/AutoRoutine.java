@@ -352,7 +352,8 @@ public class AutoRoutine {
 					Elevator.goToPosition(Constants.HighScalePosition);
 					setAutonDelay(1);
 					currentAutonState = LEFT_RIGHT_DELAY_BEFORE_TURN;
-				}if(fms_plate_assignment.charAt(0) == 'L')
+				}
+				else if(fms_plate_assignment.charAt(0) == 'L')
 				{
 					//LRL
 					Elevator.goToPosition(Constants.SwitchPosition);

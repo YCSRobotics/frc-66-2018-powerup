@@ -163,6 +163,10 @@ public class Constants {
 	
 	public static final double LeftRightCreepSwitchDist = 18;
 	public static final double LeftRightCreepScaleDist = 18;
+	public static final double LeftRightCrossCreepDistance = 18;
+	
+	public static final double LeftRightCrossScaleDistance = 200.0;
+	public static final double LeftRightCrossScaleSpeed = 0.75;
 	
 	public static final double LeftRightCreepSpeed    = 0.3;
 
