@@ -341,11 +341,12 @@ public class Drivetrain {
 		
 	}*/
 	
-	public static void setMoveDistance(double yDistance, double yThrottle){
+	public static void setMoveDistance(double yDistance, double yThrottle, double xDistance, double xThrottle){
 		
 		sensors.resetEncoder();
 		
 		yTargetDistance = yDistance;
+		xTargetDistance = xDistance;
 		
 		enableDrivetrainDynamicBraking(true);
 		
@@ -358,6 +359,17 @@ public class Drivetrain {
     	{
     		isMovingYDistance = false;
     		targetYThrottle = 0.0;
+    	}
+		
+		if(Math.abs(xDistance) > Constants.TargetDistanceThreshold)
+		{
+    		isMovingXDistance = true;
+    		targetXThrottle = xThrottle;
+		}
+    	else
+    	{
+    		isMovingXDistance = false;
+    		targetXThrottle = 0.0;
     	}
 	}
 	
