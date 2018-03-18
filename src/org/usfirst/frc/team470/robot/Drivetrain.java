@@ -73,6 +73,9 @@ public class Drivetrain {
 		//Calibrate Gyro
 		gyro.calibrate();
 		
+		//Configure strafe encoders
+		topSlideMotor.setSensorPhase(true);
+		bottomSlideMotor.setSensorPhase(true);
 	}
 	
 	//Main drivetrain movement code
@@ -134,7 +137,7 @@ public class Drivetrain {
 		   (isMovingXDistance)){
 			//Move distance without tracking vision target
 			y_distance_error = yTargetDistance - sensors.getMainAvgDistance();
-			//x_distance_error = xTargetDistance - getTopSlideDistance();
+			x_distance_error = xTargetDistance - getStrafeAverageDistance();
 			
 			if(Math.abs(y_distance_error) <= Constants.TargetDistanceThreshold){
 				//Robot has reached target
@@ -142,11 +145,11 @@ public class Drivetrain {
 				isMovingYDistance = false;
 			}
 		
-			/*if(Math.abs(x_distance_error) <= Constants.TargetDistanceThreshold){
+			if(Math.abs(x_distance_error) <= Constants.TargetDistanceThreshold){
 				//Robot has reached target
 				targetXThrottle = 0.0;
 				isMovingXDistance = false;
-			}*/
+			}
 
 			targetTurn = -1*(gyro.getAngle()*Constants.GyroGain);
 		}
@@ -344,6 +347,8 @@ public class Drivetrain {
 	public static void setMoveDistance(double yDistance, double yThrottle, double xDistance, double xThrottle){
 		
 		sensors.resetEncoder();
+		topSlideMotor.setSelectedSensorPosition(0, 0, 0);
+		bottomSlideMotor.setSelectedSensorPosition(0, 0, 0);
 		
 		yTargetDistance = yDistance;
 		xTargetDistance = xDistance;
@@ -391,7 +396,13 @@ public class Drivetrain {
 			leftSlaveMotor.setNeutralMode(NeutralMode.Coast);
 			rightMasterMotor.setNeutralMode(NeutralMode.Coast);
 			rightSlaveMotor.setNeutralMode(NeutralMode.Coast);
-		}
+		}	
+	}
+	
+	public static double getStrafeAverageDistance(){
+		double topdistance = topSlideMotor.getSelectedSensorPosition(0);
+		double bottomdistance = bottomSlideMotor.getSelectedSensorPosition(0);
 		
+		return((topdistance+bottomdistance)/2);
 	}
 }

@@ -19,7 +19,8 @@ public class AutoRoutine {
 	final static int CENTER_SWITCH_DELAY_1 		  = 1;
 	final static int CENTER_SWITCH_DELAY_2 		  = 2;
 	final static int CENTER_SWITCH_DELAY_3 		  = 3;
-    final static int CENTER_TURN_TO_TARGET		  = 4;
+    //final static int CENTER_TURN_TO_TARGET		  = 4;
+	final static int CENTER_STRAFE_DIAGONALLY     = 4;
 	final static int MOVE_Y_DISTANCE_FWD 		  = 5;
 	final static int BACKUP				 		  = 6;
 	final static int LEFT_RIGHT_DELAY_BEFORE_TURN = 7;
@@ -65,9 +66,12 @@ public class AutoRoutine {
 		case START:
 			stateActionStart();
 			break;
-		case CENTER_TURN_TO_TARGET:
-			stateActionCenterTurnToTarget();
+		case CENTER_STRAFE_DIAGONALLY:
+			stateActionStrafeDiagonally();
 			break;
+		/*case CENTER_TURN_TO_TARGET:
+			stateActionCenterTurnToTarget();
+			break;*/
 		case CENTER_SWITCH_DELAY_1:
 			stateActionCenSwDelay1();
 			break;
@@ -107,6 +111,22 @@ public class AutoRoutine {
 		}
 	}
 	
+	private void stateActionStrafeDiagonally() {
+		if((!Drivetrain.isMovingYDistance) &&
+		   (!Drivetrain.isMovingXDistance))
+		{
+			Drivetrain.setMoveDistance(Constants.CenterSwitchFwdDistance, 
+										Constants.CenterSwitchFwdSpeed,
+										0,0);
+			currentAutonState = MOVE_Y_DISTANCE_FWD;
+		}
+		else
+		{
+			//Wait for strafe to finish
+		}
+		
+	}
+
 	private void stateActionStart(){
 		//Log what the FMS plate assignment is (to argue with FTA)
 		System.out.println("The received FMS assignment is: " +  fms_plate_assignment);
@@ -117,18 +137,28 @@ public class AutoRoutine {
 					targetPlate = LEFT_SWITCH;
 					Elevator.goToPosition(Constants.SwitchPosition);
 					Drivetrain.zeroGyro();
-					Drivetrain.setTurnToTarget(-Constants.CenterTurnToSwitchSpeed,
+					Drivetrain.setMoveDistance(Constants.CenterStrafeYDistance, 
+											   Constants.CenterStrafeYSpeed, 
+											   Constants.CenterStrafeXDistanceLeft, 
+											   Constants.CenterStrafeXSpeed);
+					currentAutonState = CENTER_STRAFE_DIAGONALLY;
+					/*Drivetrain.setTurnToTarget(-Constants.CenterTurnToSwitchSpeed,
 												Constants.CenterTurnToSwitchAngle);
-					currentAutonState = CENTER_TURN_TO_TARGET;
+					currentAutonState = CENTER_TURN_TO_TARGET;*/
 				}
 				else if(fms_plate_assignment.charAt(0) == 'R')
 				{
 					targetPlate = RIGHT_SWITCH;
 					Elevator.goToPosition(Constants.SwitchPosition);
 					Drivetrain.zeroGyro();
-					Drivetrain.setTurnToTarget(Constants.CenterTurnToSwitchSpeed,
+					Drivetrain.setMoveDistance(Constants.CenterStrafeYDistance, 
+							   				   Constants.CenterStrafeYSpeed, 
+							   				   -Constants.CenterStrafeXDistanceRight, 
+							   				   -Constants.CenterStrafeXSpeed);
+					currentAutonState = CENTER_STRAFE_DIAGONALLY;
+					/*Drivetrain.setTurnToTarget(Constants.CenterTurnToSwitchSpeed,
 							                    Constants.CenterTurnToSwitchAngle);
-					currentAutonState = CENTER_TURN_TO_TARGET;
+					currentAutonState = CENTER_TURN_TO_TARGET;*/
 				}
 				else
 				{
@@ -318,10 +348,10 @@ public class AutoRoutine {
 		if(timer.get()>= alarmTime)
 		{
 			Intake.setIntakeSpeed(0.0);
-			Drivetrain.setMoveDistance(Constants.CenterSwitchRwdDistance, 
+			/*Drivetrain.setMoveDistance(Constants.CenterSwitchRwdDistance, 
 										Constants.CenterSwitchRwdSpeed,
-										0,0);
-			currentAutonState = BACKUP;
+										0,0);*/
+			currentAutonState = STOP;
 		}
 		else{
 			//Wait for the timer to expire
@@ -333,19 +363,19 @@ public class AutoRoutine {
 			if(selectedAutonRoutine == CENTER_SWITCH)
 			{
 				Intake.setIntakeSolenoid(true);
-				setAutonDelay(1);
+				setAutonDelay(0.5);
 				currentAutonState = CENTER_SWITCH_DELAY_2;
 			}
 			else if (selectedAutonRoutine == LEFT_START_SWITCH)
 			{
-				if(fms_plate_assignment.charAt(0) == 'L')
+				if(targetPlate == LEFT_SWITCH)
 				{
 					//LLL or LRL
 					Elevator.goToPosition(Constants.SwitchPosition);
 					setAutonDelay(1);
 					currentAutonState = LEFT_RIGHT_DELAY_BEFORE_TURN;
 				}
-				else if(fms_plate_assignment.charAt(1) == 'L')
+				else if(targetPlate == LEFT_SCALE)
 				{
 					//RLR
 					Elevator.goToPosition(Constants.HighScalePosition);
@@ -361,24 +391,17 @@ public class AutoRoutine {
 			}
 			else if (selectedAutonRoutine == LEFT_START_SCALE)
 			{
-				if(fms_plate_assignment.charAt(1) == 'L')
+				if(targetPlate == LEFT_SCALE)
 				{
 					//RLR or LLL
 					Elevator.goToPosition(Constants.HighScalePosition);
 					setAutonDelay(1);
 					currentAutonState = LEFT_RIGHT_DELAY_BEFORE_TURN;
 				}
-				else if(fms_plate_assignment.charAt(0) == 'L')
+				else if(targetPlate == LEFT_SWITCH)
 				{
 					//LRL
 					Elevator.goToPosition(Constants.SwitchPosition);
-					setAutonDelay(1);
-					currentAutonState = LEFT_RIGHT_DELAY_BEFORE_TURN;
-				}
-				else if(fms_plate_assignment.charAt(1) == 'L')
-				{
-					//RLR
-					Elevator.goToPosition(Constants.HighScalePosition);
 					setAutonDelay(1);
 					currentAutonState = LEFT_RIGHT_DELAY_BEFORE_TURN;
 				}
@@ -391,14 +414,14 @@ public class AutoRoutine {
 			}
 			else if (selectedAutonRoutine == RIGHT_START_SWITCH)
 			{
-				if(fms_plate_assignment.charAt(0) == 'R')
+				if(targetPlate == RIGHT_SWITCH)
 				{
 					//RRR or RLR
 					Elevator.goToPosition(Constants.SwitchPosition);
 					setAutonDelay(1);
 					currentAutonState = LEFT_RIGHT_DELAY_BEFORE_TURN;
 				}
-				else if(fms_plate_assignment.charAt(1) == 'R')
+				else if(targetPlate == RIGHT_SCALE)
 				{
 					//LRL
 					Elevator.goToPosition(Constants.HighScalePosition);
@@ -414,14 +437,14 @@ public class AutoRoutine {
 			}
 			else if (selectedAutonRoutine == RIGHT_START_SCALE)
 			{
-				if(fms_plate_assignment.charAt(1) == 'R')
+				if(targetPlate == RIGHT_SCALE)
 				{
 					//LRL or RRR
 					Elevator.goToPosition(Constants.HighScalePosition);
 					setAutonDelay(1);
 					currentAutonState = LEFT_RIGHT_DELAY_BEFORE_TURN;
 				}
-				else if(fms_plate_assignment.charAt(0) == 'R')
+				else if(targetPlate == RIGHT_SWITCH)
 				{
 					//RLR
 					Elevator.goToPosition(Constants.SwitchPosition);
