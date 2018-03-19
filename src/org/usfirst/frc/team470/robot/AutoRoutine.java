@@ -607,7 +607,15 @@ public class AutoRoutine {
 	
 	private void stateActionLftRtExtendIntake(){
 		if(timer.get()>= alarmTime){
-			Intake.setIntakeSpeed(1.0);
+			if((targetPlate == CROSS_RIGHT_SCALE)||
+			   (targetPlate == CROSS_LEFT_SCALE)){
+				Intake.setIntakeSpeed(0.5);
+			}
+			else
+			{
+				Intake.setIntakeSpeed(1.0);
+			}
+			
 			setAutonDelay(1);
 			currentAutonState = LEFT_RIGHT_EJECT_CUBE;
 		}
