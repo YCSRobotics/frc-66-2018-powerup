@@ -29,14 +29,18 @@ public class AutoRoutine {
 	final static int CREEP_FWD					  = 10;
 	final static int LEFT_RIGHT_EXTEND_INTAKE	  = 11;
 	final static int LEFT_RIGHT_EJECT_CUBE  	  = 12;
+	final static int CROSS_SCALE				  = 13;
+	final static int DELAY_AFTER_CROSS_SCALE      = 14;
 	final static int STOP						  = 255;
 	
 	//Target plates
-	final static int NONE         = 0;
-	final static int LEFT_SWITCH  = 1;
-	final static int RIGHT_SWITCH = 2;
-	final static int LEFT_SCALE   = 3;
-	final static int RIGHT_SCALE  = 4;
+	final static int NONE              = 0;
+	final static int LEFT_SWITCH       = 1;
+	final static int RIGHT_SWITCH      = 2;
+	final static int LEFT_SCALE        = 3;
+	final static int RIGHT_SCALE       = 4;
+	final static int CROSS_LEFT_SCALE  = 5;
+	final static int CROSS_RIGHT_SCALE = 6;
 	
 	public static int selectedAutonRoutine;
 	public static int currentAutonState = START;
@@ -102,6 +106,12 @@ public class AutoRoutine {
 		case LEFT_RIGHT_TURN_1:
 			stateActionLftRtTurn1();
 			break;
+		case CROSS_SCALE:
+			stateActionCrossScale();
+			break;
+		case DELAY_AFTER_CROSS_SCALE:
+			stateActionDelayAfterCrossScale();
+			break;
 		case BACKUP:
 			stateActionBackup();
 			break;
@@ -111,6 +121,28 @@ public class AutoRoutine {
 		}
 	}
 	
+	private void stateActionDelayAfterCrossScale() {
+		if(timer.get()>= alarmTime){
+			Drivetrain.setMoveDistance(Constants.CrossScaleCreepDistance, 
+						   			   Constants.LeftRightCreepSpeed,
+									   0,0);
+			currentAutonState = CREEP_FWD;
+		}
+	}
+
+	private void stateActionCrossScale() {
+		if(!Drivetrain.isMovingXDistance){
+			Elevator.goToPosition(Constants.HighScalePosition);
+			setAutonDelay(1);
+			currentAutonState = DELAY_AFTER_CROSS_SCALE;
+		}
+		else
+		{
+			//Wait for stop moving
+		}
+		
+	}
+
 	private void stateActionStrafeDiagonally() {
 		if((!Drivetrain.isMovingYDistance) &&
 		   (!Drivetrain.isMovingXDistance))
@@ -188,10 +220,10 @@ public class AutoRoutine {
 				}else if(fms_plate_assignment.charAt(1) == 'R'){
 					//Right switch and scale are ours "RRR"
 					//For now, just cross autonomous line
-					targetPlate = NONE;
+					targetPlate = CROSS_RIGHT_SCALE;
 					Drivetrain.zeroGyro();
-					Drivetrain.setMoveDistance(Constants.LeftRightAutoLineDistance, 
-							     				Constants.LeftRightAutoLineSpeed,
+					Drivetrain.setMoveDistance(Constants.LeftRightCrossScaleYDistance, 
+							     				Constants.LeftRightCrossScaleYSpeed,
 												0,0);
 					currentAutonState = MOVE_Y_DISTANCE_FWD;
 				}else{
@@ -220,11 +252,11 @@ public class AutoRoutine {
 				}else if(fms_plate_assignment.charAt(1) == 'R'){
 					//Right switch and scale are ours "RRR"
 					//For now, just cross autonomous line
-					targetPlate = NONE;
+					targetPlate = CROSS_RIGHT_SCALE;
 					Drivetrain.zeroGyro();
-					Drivetrain.setMoveDistance(Constants.LeftRightAutoLineDistance, 
-												Constants.LeftRightAutoLineSpeed,
-												0,0);
+					Drivetrain.setMoveDistance(Constants.LeftRightCrossScaleYDistance, 
+		     								   Constants.LeftRightCrossScaleYSpeed,
+		     								   0,0);
 					currentAutonState = MOVE_Y_DISTANCE_FWD;
 				}else{
 					//Not a valid plate assignment
@@ -252,11 +284,11 @@ public class AutoRoutine {
 				}else if(fms_plate_assignment.charAt(1) == 'L'){
 					//Left switch and scale are ours - LLL
 					//For now, just cross autonomous line
-					targetPlate = NONE;
+					targetPlate = CROSS_LEFT_SCALE;
 					Drivetrain.zeroGyro();
-					Drivetrain.setMoveDistance(Constants.LeftRightAutoLineDistance, 
-							  					Constants.LeftRightAutoLineSpeed,
-												0,0);
+					Drivetrain.setMoveDistance(Constants.LeftRightCrossScaleYDistance, 
+		     				                   Constants.LeftRightCrossScaleYSpeed,
+							                   0,0);
 					currentAutonState = MOVE_Y_DISTANCE_FWD;
 				}else{
 					//Not a valid plate assignment
@@ -282,11 +314,11 @@ public class AutoRoutine {
 				}else if(fms_plate_assignment.charAt(1) == 'L'){
 					//Left switch and scale are ours - LLL
 					//For now, just cross autonomous line
-					targetPlate = NONE;
+					targetPlate = CROSS_LEFT_SCALE;
 					Drivetrain.zeroGyro();
-					Drivetrain.setMoveDistance(Constants.LeftRightAutoLineDistance, 
-											   Constants.LeftRightAutoLineSpeed,
-											   0,0);
+					Drivetrain.setMoveDistance(Constants.LeftRightCrossScaleYDistance, 
+		     				                   Constants.LeftRightCrossScaleYSpeed,
+							                   0,0);
 					currentAutonState = MOVE_Y_DISTANCE_FWD;
 				}else{
 					//Not a valid plate assignment
@@ -372,19 +404,27 @@ public class AutoRoutine {
 				{
 					//LLL or LRL
 					Elevator.goToPosition(Constants.SwitchPosition);
-					setAutonDelay(1);
+					setAutonDelay(0.5);
 					currentAutonState = LEFT_RIGHT_DELAY_BEFORE_TURN;
 				}
 				else if(targetPlate == LEFT_SCALE)
 				{
 					//RLR
 					Elevator.goToPosition(Constants.HighScalePosition);
-					setAutonDelay(1);
+					setAutonDelay(0.5);
 					currentAutonState = LEFT_RIGHT_DELAY_BEFORE_TURN;
+				}
+				else if(targetPlate == CROSS_RIGHT_SCALE)
+				{
+					//RRR
+					Drivetrain.setMoveDistance(0,0, 
+											   -Constants.LeftRightCrossScaleXDistance, 
+											   -Constants.LeftRightCrossScaleXSpeed);
+					currentAutonState = CROSS_SCALE;
+					//currentAutonState = STOP;
 				}
 				else
 				{
-					//RRR
 					currentAutonState = STOP;
 				}
 				
@@ -395,19 +435,27 @@ public class AutoRoutine {
 				{
 					//RLR or LLL
 					Elevator.goToPosition(Constants.HighScalePosition);
-					setAutonDelay(1);
+					setAutonDelay(0.5);
 					currentAutonState = LEFT_RIGHT_DELAY_BEFORE_TURN;
 				}
 				else if(targetPlate == LEFT_SWITCH)
 				{
 					//LRL
 					Elevator.goToPosition(Constants.SwitchPosition);
-					setAutonDelay(1);
+					setAutonDelay(0.5);
 					currentAutonState = LEFT_RIGHT_DELAY_BEFORE_TURN;
+				}
+				else if(targetPlate == CROSS_RIGHT_SCALE)
+				{
+					//RRR
+					Drivetrain.setMoveDistance(0,0, 
+											   -Constants.LeftRightCrossScaleXDistance, 
+											   -Constants.LeftRightCrossScaleXSpeed);
+					currentAutonState = CROSS_SCALE;
+					//currentAutonState = STOP;
 				}
 				else
 				{
-					//RRR
 					currentAutonState = STOP;
 				}
 				
@@ -418,19 +466,27 @@ public class AutoRoutine {
 				{
 					//RRR or RLR
 					Elevator.goToPosition(Constants.SwitchPosition);
-					setAutonDelay(1);
+					setAutonDelay(0.5);
 					currentAutonState = LEFT_RIGHT_DELAY_BEFORE_TURN;
 				}
 				else if(targetPlate == RIGHT_SCALE)
 				{
 					//LRL
 					Elevator.goToPosition(Constants.HighScalePosition);
-					setAutonDelay(1);
+					setAutonDelay(0.5);
 					currentAutonState = LEFT_RIGHT_DELAY_BEFORE_TURN;
+				}
+				else if(targetPlate == CROSS_LEFT_SCALE)
+				{
+					//LLL
+					Drivetrain.setMoveDistance(0,0, 
+											   Constants.LeftRightCrossScaleXDistance, 
+											   Constants.LeftRightCrossScaleXSpeed);
+					currentAutonState = CROSS_SCALE;
+					//currentAutonState = STOP;
 				}
 				else
 				{
-					//LLL
 					currentAutonState = STOP;
 				}
 				
@@ -441,19 +497,27 @@ public class AutoRoutine {
 				{
 					//LRL or RRR
 					Elevator.goToPosition(Constants.HighScalePosition);
-					setAutonDelay(1);
+					setAutonDelay(0.5);
 					currentAutonState = LEFT_RIGHT_DELAY_BEFORE_TURN;
 				}
 				else if(targetPlate == RIGHT_SWITCH)
 				{
 					//RLR
 					Elevator.goToPosition(Constants.SwitchPosition);
-					setAutonDelay(1);
+					setAutonDelay(0.5);
 					currentAutonState = LEFT_RIGHT_DELAY_BEFORE_TURN;
+				}
+				else if(targetPlate == CROSS_LEFT_SCALE)
+				{
+					//LLL
+					Drivetrain.setMoveDistance(0,0, 
+											   Constants.LeftRightCrossScaleXDistance, 
+											   Constants.LeftRightCrossScaleXSpeed);
+					currentAutonState = CROSS_SCALE;
+					//currentAutonState = STOP;
 				}
 				else
 				{
-					//LLL
 					currentAutonState = STOP;
 				}
 				
@@ -505,7 +569,7 @@ public class AutoRoutine {
 	
 	private void stateActionLftRtTurn1(){
 		if(!Drivetrain.isTurning){
-			setAutonDelay(1);
+			setAutonDelay(0.5);
 			currentAutonState = LEFT_RIGHT_DELAY_AFTER_TURN;
 		}
 		else{
@@ -536,7 +600,7 @@ public class AutoRoutine {
 	private void stateActionCreepFwd(){
 		if(!Drivetrain.isMovingYDistance){
 			Intake.setIntakeSolenoid(true);
-			setAutonDelay(1);
+			setAutonDelay(0.5);
 			currentAutonState = LEFT_RIGHT_EXTEND_INTAKE;
 		}
 	}
