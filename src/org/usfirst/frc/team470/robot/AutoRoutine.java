@@ -360,13 +360,6 @@ public class AutoRoutine {
 					setAutonDelay(1);
 					currentAutonState = LEFT_RIGHT_DELAY_BEFORE_TURN;
 				}
-				else if(fms_plate_assignment.charAt(1) == 'L')
-				{
-					//RLR
-					Elevator.goToPosition(Constants.HighScalePosition);
-					setAutonDelay(1);
-					currentAutonState = LEFT_RIGHT_DELAY_BEFORE_TURN;
-				}
 				else
 				{
 					//RRR
