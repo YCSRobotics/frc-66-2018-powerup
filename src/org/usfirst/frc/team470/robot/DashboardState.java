@@ -14,8 +14,9 @@ public class DashboardState {
 		SmartDashboard.putNumber("Right Wheel Distance", sensors.getRightWheelDistance());
 		SmartDashboard.putNumber("Average Wheel Distance", sensors.getMainAvgDistance());
 		
-		//SmartDashboard.putNumber("BottomDistance", Drivetrain.getBottomSlideDistance());
-		//SmartDashboard.putNumber("TopDistance", Drivetrain.getTopSlideDistance());
+		SmartDashboard.putNumber("BottomDistance", Drivetrain.getBottomMotorDistance());
+		SmartDashboard.putNumber("TopDistance", Drivetrain.getTopMotorDistance());
+		SmartDashboard.putNumber("Average Strafe Motor Distance", Drivetrain.getStrafeAverageDistance());
 		
 		SmartDashboard.putNumber("Elevator Position", Elevator.getElevatorPosition());
 		SmartDashboard.putNumber("Elevator Target Position", Elevator.commandedPosition);

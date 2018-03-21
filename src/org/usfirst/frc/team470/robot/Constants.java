@@ -80,6 +80,7 @@ public class Constants {
 	public static final boolean RightEncoderReversed = false;
 	public static final double EncoderPulsesPerRev = 360; //in degrees
 	public static final double WheelDiameter = 6.0; //in inches
+	public static final double DistancePerRev = (WheelDiameter*PI);
 	public static final double EncoderDistancePerPulse = 
 									(WheelDiameter*PI)/(EncoderPulsesPerRev);
 	
@@ -121,7 +122,7 @@ public class Constants {
 	public static final double TriggerActiveThreshold = 0.5;
 	
 	//Vision Constants
-	public static final double CAMERA_WIDTH = 640;
+	public static final double CAMERA_WIDTH = 320;
 	public static final double FIELD_OF_VIEW = 60; //Logitech C270
 	public static final double DEG_PER_PIXEL = FIELD_OF_VIEW/CAMERA_WIDTH;
 	
@@ -141,14 +142,14 @@ public class Constants {
 	public static final double CenterTurnToSwitchSpeed = 0.5;
 	public static final double CenterTurnToSwitchAngle = 15.0;
 	
-	public static final double CenterStrafeXDistanceLeft   = 42;
-	public static final double CenterStrafeXDistanceRight  = 42;
-	public static final double CenterStrafeXSpeed      = 0.5;
+	public static final double CenterStrafeXDistanceLeft   = 72;
+	public static final double CenterStrafeXDistanceRight  = 36;
+	public static final double CenterStrafeXSpeed      = 0.75;
 	
-	public static final double CenterStrafeYDistance   = 42;
-	public static final double CenterStrafeYSpeed      = 0.5;
+	public static final double CenterStrafeYDistance   = 24;
+	public static final double CenterStrafeYSpeed      = 0.25;
 	
-	public static final double CenterSwitchFwdDistance = 110;
+	public static final double CenterSwitchFwdDistance = 70;
 	public static final double CenterSwitchFwdSpeed    = 0.5;
 	
 	public static final double CenterSwitchRwdSpeed    = -0.5;
@@ -170,7 +171,7 @@ public class Constants {
 	
 	public static final double LeftRightCreepSwitchDist = 18;
 	public static final double LeftRightCreepScaleDist = 18;
-	public static final double CrossScaleCreepDistance = 18;
+	public static final double CrossScaleCreepDistance = 40;
 	
 	public static final double LeftRightCrossScaleYDistance = 180.0;
 	public static final double LeftRightCrossScaleYSpeed = 0.75;

@@ -76,10 +76,16 @@ public class Drivetrain {
 		//Configure strafe encoders
 		topSlideMotor.setSensorPhase(true);
 		bottomSlideMotor.setSensorPhase(true);
+		
+		bottomSlideMotor.setSelectedSensorPosition(0, 0, 0);
+		topSlideMotor.setSelectedSensorPosition(0, 0, 0);
 	}
 	
 	//Main drivetrain movement code
 	public void updateDrivetrainTeleop() {
+		
+		System.out.println("Cube Distance" + PiMath.getCubeDistance());
+		System.out.println("Cube Angle" + PiMath.angleToCube());
 
 		isDriveStraight = isStraightButtonPressed();
 
@@ -178,6 +184,10 @@ public class Drivetrain {
 		
 		leftMasterMotor.set(ControlMode.PercentOutput, (Constants.LeftDriveReversed ? -1:1) * leftMotorCommand * driveGain);
 		rightMasterMotor.set(ControlMode.PercentOutput, (Constants.RightDriveReversed ? -1:1) * rightMotorCommand * driveGain);
+		
+		//update slides
+		bottomSlideMotor.set(ControlMode.PercentOutput, bottomSlideMotorCommand);
+		topSlideMotor.set(ControlMode.PercentOutput, -topSlideMotorCommand);
 	}
 	
 	//compute turn gain
@@ -390,19 +400,31 @@ public class Drivetrain {
 			leftSlaveMotor.setNeutralMode(NeutralMode.Brake);
 			rightMasterMotor.setNeutralMode(NeutralMode.Brake);
 			rightSlaveMotor.setNeutralMode(NeutralMode.Brake);
+			topSlideMotor.setNeutralMode(NeutralMode.Brake);
+			topSlideMotor.setNeutralMode(NeutralMode.Brake);
 		}
 		else{
 			leftMasterMotor.setNeutralMode(NeutralMode.Coast);
 			leftSlaveMotor.setNeutralMode(NeutralMode.Coast);
 			rightMasterMotor.setNeutralMode(NeutralMode.Coast);
 			rightSlaveMotor.setNeutralMode(NeutralMode.Coast);
+			topSlideMotor.setNeutralMode(NeutralMode.Coast);
+			topSlideMotor.setNeutralMode(NeutralMode.Coast);
 		}	
 	}
 	
 	public static double getStrafeAverageDistance(){
-		double topdistance = topSlideMotor.getSelectedSensorPosition(0);
-		double bottomdistance = bottomSlideMotor.getSelectedSensorPosition(0);
+		double topdistance = getTopMotorDistance();
+		double bottomdistance = getBottomMotorDistance();
 		
 		return((topdistance+bottomdistance)/2);
+	}
+	
+	public static double getTopMotorDistance(){
+		return -1*((topSlideMotor.getSelectedSensorPosition(0)/4096)*Constants.DistancePerRev);
+	}
+	
+	public static double getBottomMotorDistance(){
+		return (bottomSlideMotor.getSelectedSensorPosition(0)/4096)*Constants.DistancePerRev;
 	}
 }

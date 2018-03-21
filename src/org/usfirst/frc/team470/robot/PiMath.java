@@ -22,7 +22,7 @@ public class PiMath {
 		
 	}
 	
-	public static double angleToCube(String target) {
+	public static double angleToCube() {
 				
 		double degAngle = ((SmartDashboard.getNumber("CubeCenterOfTarget", 0) - 
 				(Constants.CAMERA_WIDTH/2)) * Constants.DEG_PER_PIXEL);
