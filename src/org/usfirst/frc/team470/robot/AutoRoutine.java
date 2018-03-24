@@ -300,6 +300,7 @@ public class AutoRoutine {
 				if(fms_plate_assignment.charAt(1) == 'R'){
 					//Right scale is ours - LRL or RRR
 					targetPlate = RIGHT_SCALE;
+					Drivetrain.zeroGyro();
 					Drivetrain.setMoveDistance(Constants.LeftRightScaleDistance, 
 												Constants.LeftRightScaleSpeed,
 												0,0);
@@ -307,6 +308,7 @@ public class AutoRoutine {
 				}else if(fms_plate_assignment.charAt(0) == 'R'){
 					//Right switch is ours - RLR
 					targetPlate = RIGHT_SWITCH;
+					Drivetrain.zeroGyro();
 					Drivetrain.setMoveDistance(Constants.LeftRightSwitchDistance, 
 												Constants.LeftRightSwitchSpeed,
 												0,0);

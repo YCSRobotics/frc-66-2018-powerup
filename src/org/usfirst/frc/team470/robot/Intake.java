@@ -4,9 +4,12 @@ import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.Timer;
 
 public class Intake {
 
+	private static Timer intakeTimer = new Timer();
+	
 	private static Talon leftIntakeMotor = Constants.IntakeLeftMotor;
 	private static Talon rightIntakeMotor = Constants.IntakeRightMotor;
 	
@@ -24,11 +27,16 @@ public class Intake {
 	private boolean isOpenCloseButtonPressed = false;
 	private boolean isTriggerPressed = false;
 	private boolean isIntakeOpen = false;
+	private boolean isHoldingCube = false;
 	public static double distanceVoltage;
 	
+	private static double intakeRunTime;
+	
+	public Intake(){
+		intakeTimer.start();
+	}
+	
 	public void intakeInit() {
-		
-		intakeOpenCloseSolenoid.set(true);
 		
 	}
 	
@@ -46,17 +54,33 @@ public class Intake {
 				isTriggerPressed = true;
 				isIntakeOpen = true;
 				isIntakeSolenoidOpenCloseActive = true;
+				isIntakeSolenoidActive = true;
 				intakeOpenCloseSolenoid.set(true);
-				setIntakeSpeed(1.0);
+				intakeSolenoid.set(true);
+				setIntakeSpeed(-0.6);
 			}
 			else if((isIntakeOpen) &&
 					(distanceVoltage > Constants.IntakeCubeDistance)){
 				//Trigger is pressed and cube detected, close intake/grip cube
 				isIntakeOpen = false;
+				isHoldingCube = true;
+				isIntakeSolenoidOpenCloseActive = false;
 				intakeOpenCloseSolenoid.set(false);
+				setIntakeRunTime(0.75);
+			}
+			else if((!isIntakeOpen) &&
+					(distanceVoltage > Constants.IntakeCubeDistance)){
+				//Intake closed on cube
+				if(intakeTimer.get() >= intakeRunTime){
+					setIntakeSpeed(0.0);
+					Elevator.goToPosition(Constants.LowCarryPosition);
+				}
+				else{
+					//Wait for timer to expire
+				}
 			}
 			else{
-				//Intake closed on cube
+			
 			}
 		}
 		else{
@@ -76,13 +100,13 @@ public class Intake {
 			else{
 				setIntakeSpeed(getIntakeInput()*0.6);
 			}
-		}
-		
-		//Handle Operator control of the Raise/Lower solenoid
-		if (!isIntakeSolenoidActive){
-			intakeSolenoid.set(false);
-		} else {
-			intakeSolenoid.set(true);
+			
+			//Handle Operator control of the Raise/Lower solenoid
+			if (!isIntakeSolenoidActive){
+				intakeSolenoid.set(false);
+			} else {
+				intakeSolenoid.set(true);
+			}
 		}
 	}
 	
@@ -155,6 +179,10 @@ public class Intake {
 	public static void setIntakeSolenoid(boolean command){
 		isIntakeSolenoidActive = command;
 		intakeSolenoid.set(command);
+	}
+	
+	private static void setIntakeRunTime(double time){
+		intakeRunTime = intakeTimer.get() + time;
 	}
 	
 }

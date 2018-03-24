@@ -138,7 +138,7 @@ public class Constants {
 	public static final double TargetDistanceThreshold = 6.0;
 	
 	//Center Auto Constants
-	public static final double IntakeCubeDistance      = 1.5;
+	public static final double IntakeCubeDistance      = 1.25;
 	public static final double CenterTurnToSwitchSpeed = 0.5;
 	public static final double CenterTurnToSwitchAngle = 15.0;
 	
@@ -173,9 +173,9 @@ public class Constants {
 	public static final double LeftRightCreepScaleDist = 18;
 	public static final double CrossScaleCreepDistance = 40;
 	
-	public static final double LeftRightCrossScaleYDistance = 180.0;
+	public static final double LeftRightCrossScaleYDistance = 200.0;
 	public static final double LeftRightCrossScaleYSpeed = 0.75;
-	public static final double LeftRightCrossScaleXDistance = 200.0;
+	public static final double LeftRightCrossScaleXDistance = 248.0;
 	public static final double LeftRightCrossScaleXSpeed = 0.75;
 	
 	public static final double LeftRightCreepSpeed    = 0.3;
