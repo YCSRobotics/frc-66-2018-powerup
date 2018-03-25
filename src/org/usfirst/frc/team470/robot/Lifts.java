@@ -11,11 +11,9 @@ public class Lifts {
 
 	static Joystick OperatorController = new Joystick(Constants.OperatorController);
 	
-	static Solenoid leftRelease = Constants.LeftLiftReleaseSolenoid;
-	static Solenoid rightRelease = Constants.RightLiftReleaseSolenoid;
+	static Solenoid releaseSolenoid = Constants.LiftReleaseSolenoid;
 	
-	private static Spark leftLiftMotor = new Spark(2);
-	private static Spark rightLiftMotor = new Spark(3);
+	private static Spark liftMotor = new Spark(2);
 	
 	public Lifts(){
 		
@@ -24,53 +22,18 @@ public class Lifts {
 	public void updateLiftsTeleop(){
 		
 		if(OperatorController.getPOV() == Constants.DPAD_UP){
-			leftRelease.set(true);
-			rightRelease.set(true);
+			releaseSolenoid.set(true);
 		}
 		else{
-			leftRelease.set(false);
-			rightRelease.set(false);
-		}
-		
-		if(OperatorController.getPOV() == Constants.DPAD_LEFT){
-			leftRelease.set(true);
-		}
-		else{
-			leftRelease.set(false);
-		}
-		
-		if(OperatorController.getPOV() == Constants.DPAD_RIGHT){
-			rightRelease.set(true);
-		}
-		else{
-			rightRelease.set(false);
+			releaseSolenoid.set(false);
 		}
 		
 		if(OperatorController.getRawAxis(Constants.LeftTrigger) >= Constants.TriggerActiveThreshold){
-			//leftLiftMotor.set(ControlMode.PercentOutput, -1.0);
+			liftMotor.set(1.0);
 		}
 		else
 		{
-			//leftLiftMotor.set(ControlMode.PercentOutput, 0.0);
-		}
-		
-		if(OperatorController.getRawAxis(Constants.RightTrigger) >= Constants.TriggerActiveThreshold){
-			//rightLiftMotor.set(ControlMode.PercentOutput, 1.0);
-		}
-		else
-		{
-			//rightLiftMotor.set(ControlMode.PercentOutput, 0.0);
-		}
-		
-		if(OperatorController.getPOV() == 180)
-		{
-			//leftLiftMotor.set(ControlMode.PercentOutput, 1.0);
-			//rightLiftMotor.set(ControlMode.PercentOutput, -1.0);
-		}
-		else
-		{		
-			//leftLiftMotor.set(ControlMode.PercentOutput, 0.0);
-			//rightLiftMotor.set(ControlMode.PercentOutput, 0.0);
+			liftMotor.set(0.0);
 		}
 	}
 }

@@ -139,7 +139,7 @@ public class Robot extends TimedRobot {
 		dashboard.updateSmartDashboard();
 		drivetrain.updateDrivetrainTeleop();
 		elevator.updateElevatorTeleop();
-		//lifts.updateLiftsTeleop();
+		lifts.updateLiftsTeleop();
 		
 	}
 

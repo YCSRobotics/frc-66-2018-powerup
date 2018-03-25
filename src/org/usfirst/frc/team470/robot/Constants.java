@@ -28,8 +28,7 @@ public class Constants {
 	public static final Solenoid IntakeSolenoid = new Solenoid(0);
 	public static final Solenoid IntakeSolenoidOpenClose = new Solenoid(1);
 	
-	public static final Solenoid LeftLiftReleaseSolenoid = new Solenoid(2);
-	public static final Solenoid RightLiftReleaseSolenoid = new Solenoid(3);
+	public static final Solenoid LiftReleaseSolenoid = new Solenoid(2);
 	
 	public static final boolean EnableDriveBrake = false;
 	public static final double DeadZoneLimit = 0.18;
