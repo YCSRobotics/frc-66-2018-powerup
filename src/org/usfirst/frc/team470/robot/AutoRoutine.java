@@ -9,28 +9,34 @@ public class AutoRoutine {
 	//Autonomous Routines
 	final static int DO_NOTHING           = 0;
 	final static int CENTER_SWITCH        = 1;
-	final static int LEFT_START_SWITCH    = 2;
-	final static int LEFT_START_SCALE     = 3;
-	final static int RIGHT_START_SWITCH   = 4;
-	final static int RIGHT_START_SCALE    = 5;
+	final static int CENTER_SWITCH_2_CUBE = 2;
+	final static int LEFT_START_SWITCH    = 3;
+	final static int LEFT_START_SCALE     = 4;
+	final static int LEFT_START_2_CUBE    = 5;
+	final static int RIGHT_START_SWITCH   = 6;
+	final static int RIGHT_START_SCALE    = 7;
+	final static int RIGHT_START_2_CUBE   = 8;
 
 	//Autonomous States
-    final static int START        			      = 0;
-	final static int CENTER_SWITCH_DELAY_1 		  = 1;
-	final static int CENTER_SWITCH_DELAY_2 		  = 2;
-	final static int CENTER_SWITCH_DELAY_3 		  = 3;
-    //final static int CENTER_TURN_TO_TARGET		  = 4;
-	final static int CENTER_STRAFE_DIAGONALLY     = 4;
-	final static int MOVE_Y_DISTANCE_FWD 		  = 5;
-	final static int BACKUP				 		  = 6;
-	final static int LEFT_RIGHT_DELAY_BEFORE_TURN = 7;
-	final static int LEFT_RIGHT_TURN_1			  = 8;
-	final static int LEFT_RIGHT_DELAY_AFTER_TURN  = 9;
-	final static int CREEP_FWD					  = 10;
-	final static int LEFT_RIGHT_EXTEND_INTAKE	  = 11;
-	final static int LEFT_RIGHT_EJECT_CUBE  	  = 12;
-	final static int CROSS_SCALE				  = 13;
-	final static int DELAY_AFTER_CROSS_SCALE      = 14;
+    final static int START        			       = 0;
+	final static int CENTER_SWITCH_EXTEND_INTAKE   = 1;
+	final static int CENTER_SWITCH_EJECT_CUBE	   = 2;
+	final static int CENTER_STRAFE_DIAGONALLY      = 3;
+	final static int CENTER_MOVE_BACKWARD          = 4;
+	final static int CENTER_CROSS_SWITCH           = 5;
+	final static int CENTER_APPROACH_CUBE		   = 6;
+	final static int CENTER_GRAB_CUBE_DELAY 	   = 7;
+	final static int CENTER_CLEAR_CUBE_ZONE        = 8;
+	final static int MOVE_Y_DISTANCE_FWD 		   = 9;
+	final static int BACKUP				 		  = 10;
+	final static int LEFT_RIGHT_DELAY_BEFORE_TURN = 11;
+	final static int LEFT_RIGHT_TURN_1			  = 12;
+	final static int LEFT_RIGHT_DELAY_AFTER_TURN  = 13;
+	final static int CREEP_FWD					  = 14;
+	final static int LEFT_RIGHT_EXTEND_INTAKE	  = 15;
+	final static int LEFT_RIGHT_EJECT_CUBE  	  = 16;
+	final static int CROSS_SCALE				  = 17;
+	final static int DELAY_AFTER_CROSS_SCALE      = 18;
 	final static int STOP						  = 255;
 	
 	//Target plates
@@ -47,6 +53,7 @@ public class AutoRoutine {
 	public static int targetPlate = NONE;
 	
 	public static int autonDelayCount = 0;
+	private static int cubeCount = 0;
 	
 	private double alarmTime;
 	
@@ -73,17 +80,26 @@ public class AutoRoutine {
 		case CENTER_STRAFE_DIAGONALLY:
 			stateActionStrafeDiagonally();
 			break;
-		/*case CENTER_TURN_TO_TARGET:
-			stateActionCenterTurnToTarget();
-			break;*/
-		case CENTER_SWITCH_DELAY_1:
-			stateActionCenSwDelay1();
+		case CENTER_SWITCH_EXTEND_INTAKE:
+			stateActionCenSwPivotIntakeDelay();
 			break;
-		case CENTER_SWITCH_DELAY_2:
-			stateActionCenSwDelay2();
+		case CENTER_SWITCH_EJECT_CUBE:
+			stateActionCenSwEjectCubeDelay();
 			break;
-		case CENTER_SWITCH_DELAY_3:
-			stateActionCenSwDelay3();
+		case CENTER_MOVE_BACKWARD:
+			stateActionCenMoveBackward();
+			break;
+		case CENTER_CROSS_SWITCH:
+			stateActionCenCrossSwitch();
+			break;
+		case CENTER_APPROACH_CUBE:
+			stateActionCenApproachCube();
+			break;
+		case CENTER_GRAB_CUBE_DELAY:
+			stateActionCenGrabCubeDelay();
+			break;
+		case CENTER_CLEAR_CUBE_ZONE:
+			stateActionCenClearCubeZone();
 			break;
 		case MOVE_Y_DISTANCE_FWD:
 			stateActionMoveYDistance();
@@ -121,6 +137,102 @@ public class AutoRoutine {
 		}
 	}
 	
+	private void stateActionCenClearCubeZone() {
+		if(!Drivetrain.isMovingXDistance){
+			if(targetPlate == LEFT_SWITCH){
+				Drivetrain.setMoveDistance(Constants.Center2ndStrafeYDistance,
+										   Constants.Center2ndStrafeYSpeed,
+						   				   Constants.Center2ndStrafeXDistance,
+						                   Constants.Center2ndStrafeXSpeed);
+				currentAutonState = CENTER_STRAFE_DIAGONALLY;
+			}
+			else
+			{
+				//targetPlate == RIGHT_SWITCH
+				Drivetrain.setMoveDistance(Constants.Center2ndStrafeYDistance,
+						   Constants.Center2ndStrafeYSpeed,
+		   				   -Constants.Center2ndStrafeXDistance,
+		                   -Constants.Center2ndStrafeXSpeed);
+				currentAutonState = CENTER_STRAFE_DIAGONALLY;
+			}
+		}
+		else{
+			//Wait for it to stop moving
+		}
+		
+	}
+
+	private void stateActionCenGrabCubeDelay() {
+		if(timer.get()>= alarmTime){
+			if(targetPlate == LEFT_SWITCH){
+				Drivetrain.setMoveDistance(0,0,
+						   				   Constants.CenterClearCubeZoneDist,
+						                   Constants.CenterClearCubeZoneSpeed);
+				currentAutonState = CENTER_CLEAR_CUBE_ZONE;
+			}
+			else
+			{
+				//targetPlate == RIGHT_SWITCH
+				Drivetrain.setMoveDistance(0,0,
+							   			   -Constants.CenterClearCubeZoneDist,
+							               -Constants.CenterClearCubeZoneSpeed);
+				currentAutonState = CENTER_CLEAR_CUBE_ZONE;
+			}	
+		}
+		else{
+			//Wait for timer to expire
+		}
+		
+	}
+
+	private void stateActionCenApproachCube() {
+		if(!Drivetrain.isMovingYDistance){
+			setAutonDelay(.75);
+			currentAutonState = CENTER_GRAB_CUBE_DELAY;
+		}
+		else{
+			//Wait for it to stop moving
+		}
+		
+	}
+
+	private void stateActionCenCrossSwitch() {
+		if(!Drivetrain.isMovingXDistance)
+		{
+			Drivetrain.setMoveDistance(18, 
+					        		   0.3, 
+					        		   0,0);
+			currentAutonState = CENTER_APPROACH_CUBE;
+		}
+		else
+		{
+			//Wait for it to stop moving
+		}
+		
+	}
+
+	private void stateActionCenMoveBackward() {
+		if(!Drivetrain.isMovingYDistance){
+			if(targetPlate == LEFT_SWITCH){
+				Drivetrain.setMoveDistance(0,0, 
+										   -Constants.CenterCrossSwitchDist,
+						                   -Constants.CenterCrossSwitchSpeed);
+				currentAutonState = CENTER_CROSS_SWITCH;
+			}
+			else
+			{
+				Drivetrain.setMoveDistance(0,0, 
+						   				   Constants.CenterCrossSwitchDist,
+						   				   Constants.CenterCrossSwitchSpeed);
+				currentAutonState = CENTER_CROSS_SWITCH;
+			}
+		}
+		else{
+			//Wait for it to stop moving
+		}
+		
+	}
+
 	private void stateActionDelayAfterCrossScale() {
 		if(timer.get()>= alarmTime){
 			Drivetrain.setMoveDistance(Constants.CrossScaleCreepDistance, 
@@ -147,10 +259,20 @@ public class AutoRoutine {
 		if((!Drivetrain.isMovingYDistance) &&
 		   (!Drivetrain.isMovingXDistance))
 		{
-			Drivetrain.setMoveDistance(Constants.CenterSwitchFwdDistance, 
-										Constants.CenterSwitchFwdSpeed,
-										0,0);
-			currentAutonState = MOVE_Y_DISTANCE_FWD;
+			if(cubeCount == 0)
+			{
+				//Delivering 1st Cube
+				Drivetrain.setMoveDistance(Constants.CenterSwitchFwdDistance, 
+										   Constants.CenterSwitchFwdSpeed,
+										   0,0);
+			    currentAutonState = MOVE_Y_DISTANCE_FWD;
+			}
+			else
+			{
+				//Second Cube
+				setAutonDelay(0.5);
+				currentAutonState = CENTER_SWITCH_EJECT_CUBE;
+			}
 		}
 		else
 		{
@@ -164,7 +286,8 @@ public class AutoRoutine {
 		System.out.println("The received FMS assignment is: " +  fms_plate_assignment);
 		
 		if(selectedAutonRoutine != DO_NOTHING){
-			if(selectedAutonRoutine == CENTER_SWITCH){	
+			if((selectedAutonRoutine == CENTER_SWITCH)||
+			   (selectedAutonRoutine == CENTER_SWITCH_2_CUBE)){	
 				if(fms_plate_assignment.charAt(0) == 'L'){
 					targetPlate = LEFT_SWITCH;
 					Elevator.goToPosition(Constants.SwitchPosition);
@@ -174,9 +297,6 @@ public class AutoRoutine {
 											   Constants.CenterStrafeXDistanceLeft, 
 											   Constants.CenterStrafeXSpeed);
 					currentAutonState = CENTER_STRAFE_DIAGONALLY;
-					/*Drivetrain.setTurnToTarget(-Constants.CenterTurnToSwitchSpeed,
-												Constants.CenterTurnToSwitchAngle);
-					currentAutonState = CENTER_TURN_TO_TARGET;*/
 				}
 				else if(fms_plate_assignment.charAt(0) == 'R')
 				{
@@ -188,9 +308,6 @@ public class AutoRoutine {
 							   				   -Constants.CenterStrafeXDistanceRight, 
 							   				   -Constants.CenterStrafeXSpeed);
 					currentAutonState = CENTER_STRAFE_DIAGONALLY;
-					/*Drivetrain.setTurnToTarget(Constants.CenterTurnToSwitchSpeed,
-							                    Constants.CenterTurnToSwitchAngle);
-					currentAutonState = CENTER_TURN_TO_TARGET;*/
 				}
 				else
 				{
@@ -336,56 +453,38 @@ public class AutoRoutine {
 		}
 	}
 	
-	private void stateActionCenterTurnToTarget(){
-		if(!Drivetrain.isTurning){
-			if(selectedAutonRoutine == CENTER_SWITCH){
-				setAutonDelay(0.5);
-				currentAutonState = CENTER_SWITCH_DELAY_1;
-			}
-			else{
-				
-			}	
-		}
-		else{
-			//Wait for turn to complete
-		}
-	}
-	
-	private void stateActionCenSwDelay1(){
-		if(timer.get()>= alarmTime)
-		{
-			autonDelayCount = 0;
-			Drivetrain.zeroGyro();
-			Drivetrain.setMoveDistance(Constants.CenterSwitchFwdDistance, 
-										Constants.CenterSwitchFwdSpeed,
-										0,0);
-			currentAutonState = MOVE_Y_DISTANCE_FWD;
-		}
-		else{
-			//Wait for the timer to expire
-		}
-	}
-	
-	private void stateActionCenSwDelay2(){
+	private void stateActionCenSwPivotIntakeDelay(){
 		if(timer.get()>= alarmTime)
 		{
 			Intake.setIntakeSpeed(1.0);
-			setAutonDelay(1);
-			currentAutonState = CENTER_SWITCH_DELAY_3;
+			setAutonDelay(0.5);
+			currentAutonState = CENTER_SWITCH_EJECT_CUBE;
 		}
 		else{
 			//Wait for the timer to expire
 		}
 	}
 	
-	private void stateActionCenSwDelay3(){
+	private void stateActionCenSwEjectCubeDelay(){
 		if(timer.get()>= alarmTime)
 		{
-			Intake.setIntakeSpeed(0.0);
-			/*Drivetrain.setMoveDistance(Constants.CenterSwitchRwdDistance, 
-										Constants.CenterSwitchRwdSpeed,
-										0,0);*/
-			currentAutonState = STOP;
+			//Increment the cube count
+			cubeCount++;
+			
+			if((selectedAutonRoutine == CENTER_SWITCH_2_CUBE) &&
+			   (cubeCount < 2)){
+				//Go get 2nd Cube
+				Drivetrain.setMoveDistance(Constants.CenterSwitchRwdDistance, 
+										   Constants.CenterSwitchRwdSpeed,
+				                            0,0);
+				currentAutonState = CENTER_MOVE_BACKWARD;
+			}
+			else
+			{
+				//Done
+				Intake.setIntakeSpeed(0.0);
+				currentAutonState = STOP;
+			}
 		}
 		else{
 			//Wait for the timer to expire
@@ -394,11 +493,12 @@ public class AutoRoutine {
 	
 	private void stateActionMoveYDistance(){
 		if(!Drivetrain.isMovingYDistance){
-			if(selectedAutonRoutine == CENTER_SWITCH)
+			if((selectedAutonRoutine == CENTER_SWITCH)||
+			   (selectedAutonRoutine == CENTER_SWITCH_2_CUBE))
 			{
 				Intake.setIntakeSolenoid(true);
 				setAutonDelay(0.5);
-				currentAutonState = CENTER_SWITCH_DELAY_2;
+				currentAutonState = CENTER_SWITCH_EXTEND_INTAKE;
 			}
 			else if (selectedAutonRoutine == LEFT_START_SWITCH)
 			{
