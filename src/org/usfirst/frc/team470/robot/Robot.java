@@ -21,7 +21,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Robot extends TimedRobot {
 	private static final String kDefaultAuto    = "Default";
-	private static final String kCenterAuto     = "Center - Switch";
+	private static final String kCenterAuto     = "Center - One Cube";
+	private static final String kCenterTwoCube  = "Center - Two Cubes";
 	private static final String kLeftSwitchAuto = "Left - Switch Priority";
 	private static final String kLeftScaleAuto  = "Left - Scale Priority";
 	private static final String kRightSwitchAuto = "Right - Switch Priority";
@@ -45,7 +46,8 @@ public class Robot extends TimedRobot {
 	@Override
 	public void robotInit() {
 		m_chooser.addDefault("Default Auto", kDefaultAuto);
-		m_chooser.addObject("Center - Switch", kCenterAuto);
+		m_chooser.addObject("Center - One Cube", kCenterAuto);
+		m_chooser.addObject("Center - Two Cubes", kCenterTwoCube);
 		m_chooser.addObject("Left - Switch Priority", kLeftSwitchAuto);
 		m_chooser.addObject("Left - Scale Priority", kLeftScaleAuto);
 		m_chooser.addObject("Right - Switch Priority", kRightSwitchAuto);
@@ -87,6 +89,10 @@ public class Robot extends TimedRobot {
 		case kCenterAuto:
 			// Put custom auto code here
 			autonomous.setSelectedAutonRoutine(AutoRoutine.CENTER_SWITCH);
+			break;
+		case kCenterTwoCube:
+			// Put custom auto code here
+			autonomous.setSelectedAutonRoutine(AutoRoutine.CENTER_SWITCH_2_CUBE);
 			break;
 		case kLeftSwitchAuto:
 			// Put custom auto code here

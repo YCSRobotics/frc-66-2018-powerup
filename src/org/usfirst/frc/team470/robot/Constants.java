@@ -141,9 +141,14 @@ public class Constants {
 	public static final double CenterTurnToSwitchSpeed = 0.5;
 	public static final double CenterTurnToSwitchAngle = 15.0;
 	
-	public static final double CenterStrafeXDistanceLeft   = 72;
+	public static final double CenterStrafeXDistanceLeft   = 66;
 	public static final double CenterStrafeXDistanceRight  = 36;
 	public static final double CenterStrafeXSpeed      = 0.75;
+	
+	public static final double Center2ndStrafeXDistance = 30;
+	public static final double Center2ndStrafeXSpeed = 0.75;
+	public static final double Center2ndStrafeYDistance = 40;
+	public static final double Center2ndStrafeYSpeed = 0.25;
 	
 	public static final double CenterStrafeYDistance   = 24;
 	public static final double CenterStrafeYSpeed      = 0.25;
@@ -152,7 +157,11 @@ public class Constants {
 	public static final double CenterSwitchFwdSpeed    = 0.5;
 	
 	public static final double CenterSwitchRwdSpeed    = -0.5;
-	public static final double CenterSwitchRwdDistance = -100;
+	public static final double CenterSwitchRwdDistance = -45;
+	public static final double CenterCrossSwitchSpeed  = 0.75;
+	public static final double CenterCrossSwitchDist   = 46;
+	public static final double CenterClearCubeZoneSpeed  = 0.5;
+	public static final double CenterClearCubeZoneDist   = 24;
 	//public static final double SideTurnToSwitchAngle = 90.0;
 	
 	//Left & Right Auto Constants

@@ -181,6 +181,11 @@ public class Intake {
 		intakeSolenoid.set(command);
 	}
 	
+	public static void setIntakeOpenSolenoid(boolean command){
+		isIntakeSolenoidOpenCloseActive = command;
+		intakeOpenCloseSolenoid.set(command);
+	}
+	
 	private static void setIntakeRunTime(double time){
 		intakeRunTime = intakeTimer.get() + time;
 	}
