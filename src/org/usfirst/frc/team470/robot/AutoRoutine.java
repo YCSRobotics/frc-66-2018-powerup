@@ -164,6 +164,10 @@ public class AutoRoutine {
 
 	private void stateActionCenGrabCubeDelay() {
 		if(timer.get()>= alarmTime){
+			
+			Intake.setIntakeSpeed(-0.15);
+			Elevator.goToPosition(Constants.SwitchPosition);
+			
 			if(targetPlate == LEFT_SWITCH){
 				Drivetrain.setMoveDistance(0,0,
 						   				   Constants.CenterClearCubeZoneDist,
@@ -187,6 +191,7 @@ public class AutoRoutine {
 
 	private void stateActionCenApproachCube() {
 		if(!Drivetrain.isMovingYDistance){
+			Intake.setIntakeOpenSolenoid(false);
 			setAutonDelay(.75);
 			currentAutonState = CENTER_GRAB_CUBE_DELAY;
 		}
@@ -199,8 +204,9 @@ public class AutoRoutine {
 	private void stateActionCenCrossSwitch() {
 		if(!Drivetrain.isMovingXDistance)
 		{
-			Drivetrain.setMoveDistance(18, 
-					        		   0.3, 
+			Intake.setIntakeSpeed(-1.0);
+			Drivetrain.setMoveDistance(Constants.CenterApproachCubeDist, 
+					        		   Constants.CenterApproachCubeSpeed, 
 					        		   0,0);
 			currentAutonState = CENTER_APPROACH_CUBE;
 		}
@@ -213,6 +219,10 @@ public class AutoRoutine {
 
 	private void stateActionCenMoveBackward() {
 		if(!Drivetrain.isMovingYDistance){
+			
+			Elevator.goToPosition(Constants.PickupPosition);
+			Intake.setIntakeOpenSolenoid(true);
+			
 			if(targetPlate == LEFT_SWITCH){
 				Drivetrain.setMoveDistance(0,0, 
 										   -Constants.CenterCrossSwitchDist,
@@ -270,7 +280,8 @@ public class AutoRoutine {
 			else
 			{
 				//Second Cube
-				setAutonDelay(0.5);
+				Intake.setIntakeSpeed(1.0);
+				setAutonDelay(1);
 				currentAutonState = CENTER_SWITCH_EJECT_CUBE;
 			}
 		}
@@ -358,14 +369,7 @@ public class AutoRoutine {
 												Constants.LeftRightScaleSpeed,
 												0,0);
 					currentAutonState = MOVE_Y_DISTANCE_FWD;
-				}/*else if(fms_plate_assignment.charAt(0) == 'L'){
-					//Left switch is ours - LRL
-					targetPlate = LEFT_SWITCH;
-					Drivetrain.zeroGyro();
-					Drivetrain.setMoveDistance(Constants.LeftRightSwitchDistance,
-												Constants.LeftRightSwitchSpeed,
-												0,0);
-					currentAutonState = MOVE_Y_DISTANCE_FWD;}*/
+				}
 				else if(fms_plate_assignment.charAt(1) == 'R'){
 					//Right switch and scale are ours "RRR"
 					//For now, just cross autonomous line
@@ -422,14 +426,7 @@ public class AutoRoutine {
 												Constants.LeftRightScaleSpeed,
 												0,0);
 					currentAutonState = MOVE_Y_DISTANCE_FWD;
-				}/*else if(fms_plate_assignment.charAt(0) == 'R'){
-					//Right switch is ours - RLR
-					targetPlate = RIGHT_SWITCH;
-					Drivetrain.zeroGyro();
-					Drivetrain.setMoveDistance(Constants.LeftRightSwitchDistance, 
-												Constants.LeftRightSwitchSpeed,
-												0,0);
-					currentAutonState = MOVE_Y_DISTANCE_FWD;}*/
+				}
 				else if(fms_plate_assignment.charAt(1) == 'L'){
 					//Left switch and scale are ours - LLL
 					//For now, just cross autonomous line
@@ -474,6 +471,7 @@ public class AutoRoutine {
 			if((selectedAutonRoutine == CENTER_SWITCH_2_CUBE) &&
 			   (cubeCount < 2)){
 				//Go get 2nd Cube
+				Intake.setIntakeSpeed(0.0);
 				Drivetrain.setMoveDistance(Constants.CenterSwitchRwdDistance, 
 										   Constants.CenterSwitchRwdSpeed,
 				                            0,0);

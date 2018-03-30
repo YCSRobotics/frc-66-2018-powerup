@@ -127,6 +127,7 @@ public class Constants {
 	
 	//Elevator Positions
 	public static final double ElevatorPosCtrlThreshold = 1000;
+	public static final double PickupPosition           = 500;
 	public static final double LowCarryPosition  		= 5000;//estimated 3"
 	public static final double SwitchPosition    	    = 20000;//estimated 12"
 	public static final double LowScalePosition  		= 20000;//estimated 48"
@@ -162,6 +163,9 @@ public class Constants {
 	public static final double CenterCrossSwitchDist   = 46;
 	public static final double CenterClearCubeZoneSpeed  = 0.5;
 	public static final double CenterClearCubeZoneDist   = 24;
+	
+	public static final double CenterApproachCubeSpeed   = 0.3;
+	public static final double CenterApproachCubeDist    = 18;
 	//public static final double SideTurnToSwitchAngle = 90.0;
 	
 	//Left & Right Auto Constants
