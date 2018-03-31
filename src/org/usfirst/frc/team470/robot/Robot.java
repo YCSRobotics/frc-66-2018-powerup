@@ -20,13 +20,19 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * project.
  */
 public class Robot extends TimedRobot {
-	private static final String kDefaultAuto    = "Default";
-	private static final String kCenterAuto     = "Center - One Cube";
-	private static final String kCenterTwoCube  = "Center - Two Cubes";
-	private static final String kLeftSwitchAuto = "Left - Switch Priority";
-	private static final String kLeftScaleAuto  = "Left - Scale Priority";
-	private static final String kRightSwitchAuto = "Right - Switch Priority";
-	private static final String kRightScaleAuto  = "Right - Scale Priority";
+	private static final String kDefaultAuto    	= "Default";
+	private static final String kCenterAuto     	= "Center - One Cube";
+	private static final String kCenterTwoCube  	= "Center - Two Cubes";
+	private static final String kLeftOnlySwitch    	= "Left Only - Switch Priority";
+	private static final String kLeftOnlyScale     	= "Left Only - Scale Priority";
+	private static final String kLeftSwitchAuto    	= "Left Start - Switch/Scale/Cross Scale";
+	private static final String kLeftScaleAuto     	= "Left Start - Scale/Cross Scale";
+	private static final String kLeftScaleTwoCube  	= "Left Start - Two Cube Scale";
+	private static final String kRightOnlySwitch 	= "Right Only - Switch Priority";
+	private static final String kRightOnlyScale  	= "Right Only - Scale Priority";
+	private static final String kRightSwitchAuto 	= "Right Start - Switch/Scale/Cross Scale";
+	private static final String kRightScaleAuto     = "Right Start - Scale/Cross Scale";
+	private static final String kRightScaleTwoCube  = "Right Start - Two Cube Scale";
 	
 	private String m_autoSelected;
 	private SendableChooser<String> m_chooser = new SendableChooser<>();
@@ -46,12 +52,21 @@ public class Robot extends TimedRobot {
 	@Override
 	public void robotInit() {
 		m_chooser.addDefault("Default Auto", kDefaultAuto);
+		//Center Start Auton Options
 		m_chooser.addObject("Center - One Cube", kCenterAuto);
 		m_chooser.addObject("Center - Two Cubes", kCenterTwoCube);
-		m_chooser.addObject("Left - Switch Priority", kLeftSwitchAuto);
-		m_chooser.addObject("Left - Scale Priority", kLeftScaleAuto);
-		m_chooser.addObject("Right - Switch Priority", kRightSwitchAuto);
-		m_chooser.addObject("Right - Scale Priority", kRightScaleAuto);
+		//Left Start Auton Options
+		m_chooser.addObject("Left Only - Switch Priority", kLeftOnlySwitch);
+		m_chooser.addObject("Left Only - Scale Priority", kLeftOnlyScale);
+		m_chooser.addObject("Left Start - Switch/Scale/Cross Scale", kLeftSwitchAuto);
+		m_chooser.addObject("Left Start - Scale/Cross Scale", kLeftScaleAuto);
+		m_chooser.addObject("Left Start - Two Cube Scale", kLeftScaleTwoCube);
+		//Right Start Auton Options
+		m_chooser.addObject("Right Only - Switch Priority", kRightOnlySwitch);
+		m_chooser.addObject("Right Only - Scale Priority", kRightOnlyScale);
+		m_chooser.addObject("Right Start - Switch/Scale/Cross Scale", kRightSwitchAuto);
+		m_chooser.addObject("Right Start - Scale/Cross Scale", kRightScaleAuto);
+		m_chooser.addObject("Right Start - Two Cube Scale", kRightScaleTwoCube);
 		
 		SmartDashboard.putData("Auto choices", m_chooser);
 		
@@ -94,6 +109,14 @@ public class Robot extends TimedRobot {
 			// Put custom auto code here
 			autonomous.setSelectedAutonRoutine(AutoRoutine.CENTER_SWITCH_2_CUBE);
 			break;
+		case kLeftOnlySwitch:
+			// Put custom auto code here
+			autonomous.setSelectedAutonRoutine(AutoRoutine.LEFT_ONLY_SWITCH);
+			break;
+		case kLeftOnlyScale:
+			// Put custom auto code here
+			autonomous.setSelectedAutonRoutine(AutoRoutine.LEFT_ONLY_SCALE);
+			break;
 		case kLeftSwitchAuto:
 			// Put custom auto code here
 			autonomous.setSelectedAutonRoutine(AutoRoutine.LEFT_START_SWITCH);
@@ -102,6 +125,18 @@ public class Robot extends TimedRobot {
 			// Put custom auto code here
 			autonomous.setSelectedAutonRoutine(AutoRoutine.LEFT_START_SCALE);
 			break;
+		case kLeftScaleTwoCube:
+			// Put custom auto code here
+			autonomous.setSelectedAutonRoutine(AutoRoutine.LEFT_START_2_CUBE);
+			break;
+		case kRightOnlySwitch:
+			// Put custom auto code here
+			autonomous.setSelectedAutonRoutine(AutoRoutine.RIGHT_ONLY_SWITCH);
+			break;
+		case kRightOnlyScale:
+			// Put custom auto code here
+			autonomous.setSelectedAutonRoutine(AutoRoutine.RIGHT_ONLY_SCALE);
+			break;
 		case kRightSwitchAuto:
 			// Put custom auto code here
 			autonomous.setSelectedAutonRoutine(AutoRoutine.RIGHT_START_SWITCH);
@@ -109,6 +144,10 @@ public class Robot extends TimedRobot {
 		case kRightScaleAuto:
 			// Put custom auto code here
 			autonomous.setSelectedAutonRoutine(AutoRoutine.RIGHT_START_SCALE);
+			break;
+		case kRightScaleTwoCube:
+			// Put custom auto code here
+			autonomous.setSelectedAutonRoutine(AutoRoutine.RIGHT_START_2_CUBE);
 			break;
 		case kDefaultAuto:
 		default:
