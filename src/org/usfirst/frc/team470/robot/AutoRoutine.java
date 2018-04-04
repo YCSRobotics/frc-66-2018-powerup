@@ -44,6 +44,10 @@ public class AutoRoutine {
 	final static int LEFT_RIGHT_EJECT_CUBE  	  = 16;
 	final static int CROSS_SCALE				  = 17;
 	final static int DELAY_AFTER_CROSS_SCALE      = 18;
+	final static int TURN_TO_CUBE				  = 19;
+	final static int TURN_TO_CUBE_DELAY			  = 20;
+	final static int TURN_TO_SCALE				  = 21;
+	final static int TURN_TO_SCALE_DELAY		  = 22;
 	final static int STOP						  = 255;
 	
 	//Target plates
@@ -138,12 +142,50 @@ public class AutoRoutine {
 		case BACKUP:
 			stateActionBackup();
 			break;
+		case TURN_TO_CUBE:
+			stateActionTurnToCube();
+			break;
+		case TURN_TO_CUBE_DELAY:
+			stateActionTurnToCubeDelay();
+			break;
+		case TURN_TO_SCALE:
+			stateActionTurnToScale();
+			break;
+		case TURN_TO_SCALE_DELAY:
+			stateActionTurnToScaleDelay();
+			break;
 		case STOP:
 		default:
 			stateActionStop();
 		}
 	}
 	
+	private void stateActionTurnToScaleDelay() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void stateActionTurnToScale() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void stateActionTurnToCubeDelay() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void stateActionTurnToCube() {
+		if(!Drivetrain.isTurning){
+			currentAutonState = STOP;
+		}
+		else
+		{
+			//Wait for turn to complete
+		}
+		
+	}
+
 	private void stateActionCenClearCubeZone() {
 		if(!Drivetrain.isMovingXDistance){
 			if(targetPlate == LEFT_SWITCH){
@@ -451,6 +493,30 @@ public class AutoRoutine {
 					currentAutonState = STOP;
 				}		
 			}
+			else if(selectedAutonRoutine == LEFT_START_2_CUBE)
+			{
+				if(fms_plate_assignment.charAt(1) == 'L'){
+					//Left scale is ours - RLR or LLL
+					targetPlate = LEFT_SCALE;
+					Drivetrain.zeroGyro();
+					Drivetrain.setMoveDistance(Constants.LeftRightCrossScaleYDistance, 
+							   				   Constants.LeftRightCrossScaleYSpeed,
+							   				   0,0);
+					currentAutonState = MOVE_Y_DISTANCE_FWD;
+				}
+				else if(fms_plate_assignment.charAt(1) == 'R'){
+					//Right scale is ours - LRL or RRR
+					targetPlate = CROSS_RIGHT_SCALE;
+					Drivetrain.zeroGyro();
+					Drivetrain.setMoveDistance(Constants.LeftRightCrossScaleYDistance, 
+		     								   Constants.LeftRightCrossScaleYSpeed,
+		     								   0,0);
+					currentAutonState = MOVE_Y_DISTANCE_FWD;
+				}else{
+					//Not a valid plate assignment
+					currentAutonState = STOP;
+				}		
+			}
 			else if(selectedAutonRoutine == RIGHT_ONLY_SWITCH)
 			{
 				if(fms_plate_assignment.charAt(0) == 'R'){
@@ -570,6 +636,31 @@ public class AutoRoutine {
 					currentAutonState = STOP;
 				}		
 			}
+			else if(selectedAutonRoutine == RIGHT_START_2_CUBE)
+			{
+				if(fms_plate_assignment.charAt(1) == 'R'){
+					//Right scale is ours - LRL or RRR
+					targetPlate = RIGHT_SCALE;
+					Drivetrain.zeroGyro();
+					Drivetrain.setMoveDistance(Constants.LeftRightCrossScaleYDistance, 
+			                   				   Constants.LeftRightCrossScaleYSpeed,
+			                   				   0,0);
+					currentAutonState = MOVE_Y_DISTANCE_FWD;
+				}
+				else if(fms_plate_assignment.charAt(1) == 'L'){
+					//Left switch and scale are ours - LLL
+					//For now, just cross autonomous line
+					targetPlate = CROSS_LEFT_SCALE;
+					Drivetrain.zeroGyro();
+					Drivetrain.setMoveDistance(Constants.LeftRightCrossScaleYDistance, 
+		     				                   Constants.LeftRightCrossScaleYSpeed,
+							                   0,0);
+					currentAutonState = MOVE_Y_DISTANCE_FWD;
+				}else{
+					//Not a valid plate assignment
+					currentAutonState = STOP;
+				}		
+			}
 			else{
 				currentAutonState = STOP;
 			}
@@ -661,6 +752,31 @@ public class AutoRoutine {
 				}
 				
 			}
+			else if (selectedAutonRoutine == LEFT_START_2_CUBE)
+			{
+				if(targetPlate == LEFT_SCALE)
+				{
+					//LLL or RLR
+					Drivetrain.setMoveDistance(0,0, 
+							   				-36.0, 
+							   				-Constants.LeftRightCrossScaleXSpeed);
+					currentAutonState = CROSS_SCALE;
+				}
+				else if(targetPlate == CROSS_RIGHT_SCALE)
+				{
+					//LRL or RRR
+					Drivetrain.setMoveDistance(0,0, 
+											   -Constants.LeftRightCrossScaleXDistance, 
+											   -Constants.LeftRightCrossScaleXSpeed);
+					currentAutonState = CROSS_SCALE;
+					//currentAutonState = STOP;
+				}
+				else
+				{
+					currentAutonState = STOP;
+				}
+				
+			}
 			else if ((selectedAutonRoutine == RIGHT_ONLY_SWITCH) ||
 					 (selectedAutonRoutine == RIGHT_ONLY_SCALE)  ||
 					 (selectedAutonRoutine == RIGHT_START_SWITCH) ||
@@ -695,6 +811,31 @@ public class AutoRoutine {
 				}
 				
 			}
+			else if (selectedAutonRoutine == RIGHT_START_2_CUBE)
+			{
+				if(targetPlate == RIGHT_SCALE)
+				{
+					//LRL or RRR
+					Drivetrain.setMoveDistance(0,0, 
+							   				   36.0, 
+							                   Constants.LeftRightCrossScaleXSpeed);
+					currentAutonState = CROSS_SCALE;
+				}
+				else if(targetPlate == CROSS_LEFT_SCALE)
+				{
+					//LLL or RLR
+					Drivetrain.setMoveDistance(0,0, 
+											   Constants.LeftRightCrossScaleXDistance, 
+											   Constants.LeftRightCrossScaleXSpeed);
+					currentAutonState = CROSS_SCALE;
+					//currentAutonState = STOP;
+				}
+				else
+				{
+					currentAutonState = STOP;
+				}
+				
+			}
 			else{
 				currentAutonState = STOP;
 			}
@@ -707,7 +848,17 @@ public class AutoRoutine {
 	
 	private void stateActionBackup(){
 		if(!Drivetrain.isMovingYDistance){
-			currentAutonState = STOP;
+			if((targetPlate == LEFT_SCALE) ||
+			   (targetPlate == CROSS_LEFT_SCALE)){
+				Drivetrain.setTurnToTarget(-0.6, 160);
+				currentAutonState = TURN_TO_CUBE;
+			}
+			else if((targetPlate == RIGHT_SCALE) ||
+					(targetPlate == CROSS_RIGHT_SCALE)){
+				//Right scale 
+				Drivetrain.setTurnToTarget(0.6, 160);
+				currentAutonState = TURN_TO_CUBE;
+			}
 		}
 		else
 		{
@@ -797,8 +948,26 @@ public class AutoRoutine {
 	private void stateActionLftRtEjectCube(){
 		if(timer.get()>= alarmTime){
 			Intake.setIntakeSpeed(0.0);
-			Drivetrain.enableDrivetrainDynamicBraking(false);
-			currentAutonState = STOP;
+			
+			cubeCount++;
+			
+			if(((selectedAutonRoutine == LEFT_START_2_CUBE)||
+				(selectedAutonRoutine == RIGHT_START_2_CUBE)) &&
+			    (cubeCount == 1)){
+					Drivetrain.setMoveDistance(-12.0, 
+											   -0.3, 
+											    0,0);
+					currentAutonState = BACKUP;
+			}
+			else
+			{
+				Drivetrain.enableDrivetrainDynamicBraking(false);
+				currentAutonState = STOP;
+			}
+		}
+		else
+		{
+			//Wait for timeout
 		}
 	}
 	
