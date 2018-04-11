@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Drivetrain {
 	
@@ -52,6 +53,7 @@ public class Drivetrain {
 	public static boolean isMovingYDistance = false;
 	public static boolean isMovingXDistance = false;
 	public static boolean isTurning = false;
+	public static boolean isMovingToVisionTarget = false;
 	
 	//Sensors
 	static SensorData sensors = new SensorData();
@@ -138,6 +140,7 @@ public class Drivetrain {
 	public void updateDrivetrainAuton(){
 		double y_distance_error;
 		double x_distance_error;
+		double pixel_error;
 		
 		if((isMovingYDistance)||
 		   (isMovingXDistance)){
@@ -157,6 +160,22 @@ public class Drivetrain {
 				isMovingXDistance = false;
 			}
 
+			targetTurn = -1*(gyro.getAngle()*Constants.GyroGain);
+		}
+		else if(isMovingToVisionTarget){
+			pixel_error = SmartDashboard.getNumber("PixelsToCube", 0);
+			x_distance_error = xTargetDistance - getStrafeAverageDistance();
+			
+			if((Math.abs(pixel_error) <= Constants.CubePixelThreshold)||
+			   (Math.abs(x_distance_error) <= Constants.TargetDistanceThreshold)){
+				targetXThrottle = 0.0;
+				isMovingToVisionTarget = false;
+			}
+			else
+			{
+				targetXThrottle = pixel_error * -0.005;
+			}
+			
 			targetTurn = -1*(gyro.getAngle()*Constants.GyroGain);
 		}
 		else if(isTurning)
@@ -394,6 +413,39 @@ public class Drivetrain {
 		targetTurn = turn;//Turn power
 	}
 	
+	public static void setAlignCube(double distance, double power){
+		sensors.resetEncoder();
+		topSlideMotor.setSelectedSensorPosition(0, 0, 0);
+		bottomSlideMotor.setSelectedSensorPosition(0, 0, 0);
+		
+		targetTurn = 0.0;
+		
+		boolean is_target_found = SmartDashboard.getBoolean("ContoursFound", false);
+		double pixels = SmartDashboard.getNumber("PixelsToCube", 0);
+		
+		if((is_target_found) &&
+		   (Math.abs(pixels) > Constants.CubePixelThreshold))
+		{
+			isMovingToVisionTarget = true;
+			
+			if(pixels > 0)
+			{
+				targetXThrottle = -power;
+				xTargetDistance = -distance;
+			}
+			else
+			{
+				targetXThrottle = power;
+				xTargetDistance = distance;
+			}	
+		}
+		else
+		{
+			isMovingToVisionTarget = false;
+			targetXThrottle = 0.0;
+		}
+	}
+	
 	public static void enableDrivetrainDynamicBraking(boolean enable){
 		if(enable){
 			leftMasterMotor.setNeutralMode(NeutralMode.Brake);
@@ -401,7 +453,7 @@ public class Drivetrain {
 			rightMasterMotor.setNeutralMode(NeutralMode.Brake);
 			rightSlaveMotor.setNeutralMode(NeutralMode.Brake);
 			topSlideMotor.setNeutralMode(NeutralMode.Brake);
-			topSlideMotor.setNeutralMode(NeutralMode.Brake);
+			bottomSlideMotor.setNeutralMode(NeutralMode.Brake);
 		}
 		else{
 			leftMasterMotor.setNeutralMode(NeutralMode.Coast);
@@ -409,7 +461,7 @@ public class Drivetrain {
 			rightMasterMotor.setNeutralMode(NeutralMode.Coast);
 			rightSlaveMotor.setNeutralMode(NeutralMode.Coast);
 			topSlideMotor.setNeutralMode(NeutralMode.Coast);
-			topSlideMotor.setNeutralMode(NeutralMode.Coast);
+			bottomSlideMotor.setNeutralMode(NeutralMode.Coast);
 		}	
 	}
 	

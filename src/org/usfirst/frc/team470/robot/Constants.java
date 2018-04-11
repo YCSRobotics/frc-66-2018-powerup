@@ -143,10 +143,10 @@ public class Constants {
 	public static final double CenterTurnToSwitchAngle = 15.0;
 	
 	public static final double CenterStrafeXDistanceLeft   = 66;
-	public static final double CenterStrafeXDistanceRight  = 36;
+	public static final double CenterStrafeXDistanceRight  = 28;
 	public static final double CenterStrafeXSpeed      = 0.75;
 	
-	public static final double Center2ndStrafeXDistance = 30;
+	public static final double Center2ndStrafeXDistance = 28;
 	public static final double Center2ndStrafeXSpeed = 0.75;
 	public static final double Center2ndStrafeYDistance = 40;
 	public static final double Center2ndStrafeYSpeed = 0.25;
@@ -188,9 +188,15 @@ public class Constants {
 	public static final double LeftRightCrossScaleYDistance = 200.0;
 	public static final double LeftRightCrossScaleYSpeed = 0.75;
 	public static final double LeftRightCrossScaleXDistance = 248.0;
+	public static final double LeftRightCloseScaleXDistance = 36.0;
 	public static final double LeftRightCrossScaleXSpeed = 0.75;
 	
 	public static final double LeftRightCreepSpeed    = 0.3;
+	
+	public static final double AlignCubeMaxDistance   = 18;
+	public static final double AlignCubeSpeed   = 0.3;
+	
+	public static final double CubePixelThreshold = 50;
 
 	
 }

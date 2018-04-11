@@ -166,6 +166,7 @@ public class Robot extends TimedRobot {
 		
 		autonomous.updateAutoRoutine();
 		drivetrain.updateDrivetrainAuton();
+		elevator.updateElevatorAuton();
 		dashboard.updateSmartDashboard();
 	}
 

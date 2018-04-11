@@ -56,7 +56,12 @@ public class Elevator {
 	}
 	
 	public void updateElevatorAuton(){
-		
+		//Monitor for upper or lower limit pressed
+		if((isLowerLimitPressed())||
+		   (isUpperLimitPressed()))
+		{
+			elevatorMotor.set(ControlMode.PercentOutput, 0.0);
+		}
 	}
 	
 	public void updateElevatorTeleop(){
@@ -171,5 +176,9 @@ public class Elevator {
 	public void zeroElevatorPosition(){
 		isElevatorZeroed = true;
 		elevatorMotor.setSelectedSensorPosition(0, 0, 0);
+	}
+	
+	public void setElevatorOutput(double output){
+		elevatorMotor.set(ControlMode.PercentOutput, output);
 	}
 }
